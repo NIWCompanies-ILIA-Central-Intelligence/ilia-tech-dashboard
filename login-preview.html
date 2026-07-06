@@ -92,15 +92,15 @@ function startSSO(firstTime){
     setTimeout(function(){
       s.innerHTML='<div class="check">✓</div><div class="ssomsg">Signed in as jamin.austin@simplicitygroup.com</div><div class="ssosub">Entering Command Center…</div>';
     },1400);
-    setTimeout(reset,3200);
+    setTimeout(go,3000);
   }else{
     s.innerHTML='<div class="spin"></div><div class="ssomsg">Checking your Simplicity session…</div><div class="ssosub">cih.niwcorp.com → Google</div>';
     setTimeout(function(){
       s.innerHTML='<div class="check">✓</div><div class="ssomsg">Welcome back, Jamin — already signed in</div><div class="ssosub">No password needed · entering Command Center…</div>';
     },1000);
-    setTimeout(reset,2800);
+    setTimeout(go,2400);
   }
 }
-function reset(){el().classList.remove('show');el().innerHTML='';}
+function go(){window.location.href='index.html';}
 </script>
 </body></html>
