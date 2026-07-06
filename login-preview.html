@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Command Center — Sign in (mock)</title><style>
+:root{--ink:#0D1F2D;--muted:#6B7E8F;--border:#D9E2EC;--bg:#EEF2F7;--card:#fff;--blue:#0076BD;--purple:#7C3AED;--green:#1d6b34;}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);
+ background:radial-gradient(1200px 600px at 50% -10%,#dbe8f6 0%,var(--bg) 55%);min-height:100vh;}
+.mocklabel{position:fixed;top:10px;left:10px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+ color:#fff;background:#7C3AED;padding:5px 11px;border-radius:20px;box-shadow:0 2px 8px rgba(13,31,45,.2);z-index:50;}
+/* faux browser chrome */
+.chrome{max-width:960px;margin:54px auto 0;background:#fff;border:1px solid var(--border);border-radius:14px 14px 0 0;
+ box-shadow:0 20px 50px rgba(13,31,45,.14);overflow:hidden;}
+.bar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f2f5f9;border-bottom:1px solid var(--border);}
+.dots{display:flex;gap:6px;}.dots i{width:11px;height:11px;border-radius:50%;display:block;}
+.dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+.addr{flex:1;background:#fff;border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12.5px;color:#33434f;
+ font-family:'DM Mono',ui-monospace,monospace;display:flex;align-items:center;gap:8px;}
+.addr .lock{color:var(--green);}
+.viewport{min-height:520px;display:flex;align-items:center;justify-content:center;padding:48px 20px;
+ background:radial-gradient(900px 460px at 50% -20%,#e7f0fb 0%,#fbfcfe 60%);}
+/* sign-in card */
+.card{width:min(420px,94vw);background:#fff;border:1px solid var(--border);border-radius:20px;
+ box-shadow:0 18px 44px rgba(13,31,45,.14);padding:38px 36px 30px;text-align:center;position:relative;}
+.mark{width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--purple));
+ display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;letter-spacing:.02em;
+ box-shadow:0 8px 20px rgba(0,118,189,.32);}
+h1{font-size:19px;margin:0 0 3px;}.tag{font-size:13px;color:var(--muted);margin:0 0 4px;}
+.lockline{font-size:11.5px;color:var(--green);font-weight:700;margin:0 0 26px;display:inline-flex;gap:5px;align-items:center;}
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:11px;padding:12px 16px;border:1px solid #dadce0;
+ border-radius:10px;background:#fff;font-size:14.5px;font-weight:600;color:#3c4043;cursor:pointer;transition:box-shadow .15s,background .15s;font-family:inherit;}
+.gbtn:hover{box-shadow:0 2px 10px rgba(60,64,67,.18);background:#fafbfd;}
+.gbtn svg{width:19px;height:19px;flex:none;}
+.restrict{font-size:11.5px;color:var(--muted);margin:16px 0 0;line-height:1.5;}
+.restrict code{background:#eef1f5;padding:1px 6px;border-radius:5px;font-size:11px;}
+.hint{margin:22px auto 0;max-width:340px;font-size:11.5px;color:var(--muted);background:#f2f7fc;border:1px dashed #bcd6ee;
+ border-radius:10px;padding:10px 13px;line-height:1.55;}
+.hint b{color:var(--blue);}
+/* silent-sso overlay states */
+.sso{position:absolute;inset:0;background:#fff;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:34px;}
+.sso.show{display:flex;}
+.spin{width:40px;height:40px;border-radius:50%;border:3px solid #e4eaf1;border-top-color:var(--blue);animation:sp .8s linear infinite;margin-bottom:18px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ssomsg{font-size:14px;font-weight:600;color:var(--ink);}.ssosub{font-size:12px;color:var(--muted);margin-top:5px;}
+.check{width:52px;height:52px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;
+ color:#fff;font-size:26px;margin-bottom:16px;animation:pop .3s ease;}
+@keyframes pop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+.foot{max-width:960px;margin:0 auto;background:#0D1F2D;color:#c7d3de;border-radius:0 0 14px 14px;padding:10px 16px;font-size:11px;text-align:center;}
+.toggle{max-width:960px;margin:20px auto 40px;text-align:center;}
+.toggle button{background:#fff;border:1px solid var(--border);border-radius:20px;padding:8px 15px;font-size:12.5px;font-weight:600;
+ color:var(--ink);cursor:pointer;margin:0 4px;font-family:inherit;}
+.toggle button:hover{border-color:var(--blue);color:var(--blue);}
+.caption{font-size:12px;color:var(--muted);margin-top:10px;}
+</style></head><body>
+<div class="mocklabel">Design mock · not a working login</div>
+
+<div class="chrome">
+  <div class="bar">
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="addr"><span class="lock">🔒</span> cih.niwcorp.com</div>
+  </div>
+  <div class="viewport">
+    <div class="card">
+      <div class="mark">CIH</div>
+      <h1>NIW ⟷ ILIA Command Center</h1>
+      <p class="tag">Private workspace</p>
+      <p class="lockline">🔒 Simplicity / NIW staff only</p>
+
+      <button class="gbtn" onclick="startSSO()">
+        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign in with your Simplicity account
+      </button>
+
+      <p class="restrict">Restricted to <code>@simplicitygroup.com</code> &amp; <code>@niwcorp.com</code> Google accounts.</p>
+      <div class="hint">Already signed in to Google on your work PC? <b>You're let straight through</b> — no extra password.</div>
+
+      <div class="sso" id="sso"></div>
+    </div>
+  </div>
+</div>
+<div class="foot">Access secured by Cloudflare Access · your Simplicity Google identity · session persists across the workday</div>
+
+<div class="toggle">
+  <button onclick="startSSO()">▶ Demo: already-signed-in (instant)</button>
+  <button onclick="startSSO(true)">▶ Demo: first visit (choose account)</button>
+  <p class="caption">The real thing shows one of these automatically — instant when your Google session is live, a one-time account pick otherwise.</p>
+</div>
+
+<script>
+function el(){return document.getElementById('sso');}
+function startSSO(firstTime){
+  var s=el();s.classList.add('show');
+  if(firstTime){
+    s.innerHTML='<div class="spin"></div><div class="ssomsg">Redirecting to Google…</div><div class="ssosub">Choose your Simplicity account</div>';
+    setTimeout(function(){
+      s.innerHTML='<div class="check">✓</div><div class="ssomsg">Signed in as jamin.austin@simplicitygroup.com</div><div class="ssosub">Entering Command Center…</div>';
+    },1400);
+    setTimeout(reset,3200);
+  }else{
+    s.innerHTML='<div class="spin"></div><div class="ssomsg">Checking your Simplicity session…</div><div class="ssosub">cih.niwcorp.com → Google</div>';
+    setTimeout(function(){
+      s.innerHTML='<div class="check">✓</div><div class="ssomsg">Welcome back, Jamin — already signed in</div><div class="ssosub">No password needed · entering Command Center…</div>';
+    },1000);
+    setTimeout(reset,2800);
+  }
+}
+function reset(){el().classList.remove('show');el().innerHTML='';}
+</script>
+</body></html>
