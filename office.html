@@ -129,6 +129,7 @@ const chars=[
  C({name:"Sanjay",role:"roam",vest:true,skin:"#c98a55",hair:"#181109",shirt:"#243b63",pants:"#222",say:["DOMO access?","read-only 🔒","👍"]}),
  C({name:"Mario",role:"roam",vest:true,skin:"#e6b98f",hair:"#2a1c10",shirt:"#243b63",pants:"#222",say:["let's go","aligned","☕☕"]}),
  C({name:"Mohit",role:"roam",skin:"#caa06a",hair:"#0f0f0f",shirt:"#374151",pants:"#222",say:["Ok, fine."]}),
+ C({name:"Chris",role:"roam",skin:"#e8c4a0",hair:"#4a3520",shirt:"#2f6b4f",pants:"#33414d",say:["let's review","good call","on it","👍"]}),
 ];
 chars.forEach(ch=>{ if(ch.role==="roam"){const c=Math.round((IX0+40+R()*(IX1-IX0-80))/CELL),r=Math.round(CY/CELL);const p=cc(c,r);ch.x=p.x;ch.y=p.y;ch.room=null;}
  else {const rm=byShort[ch.home];const [c,rr]=randFreeCell(rm);const p=cc(c,rr);ch.x=p.x;ch.y=p.y;ch.room=rm;} });
