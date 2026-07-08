@@ -177,11 +177,18 @@ function drawFurn(o){const {x,y,w,h,rise=8,c}=o;
  }
 }
 // ---------------- CHAR DRAW ----------------
-function bubble(ch){if(ch.bubT<=0)return;g.font="bold 12px 'Segoe UI',Arial";const tw=g.measureText(ch.bub).width,w=tw+16,x=ch.x-w/2,y=ch.y-46;
+function bubble(ch){if(ch.bubT<=0)return;g.font="bold 12px 'Segoe UI',Arial";
+ var maxw=ch.reporting?188:230,lh=15,words=String(ch.bub).split(' '),lines=[],cur='';
+ for(var i=0;i<words.length;i++){var t=cur?cur+' '+words[i]:words[i];if(g.measureText(t).width>maxw&&cur){lines.push(cur);cur=words[i];}else cur=t;}
+ if(cur)lines.push(cur);
+ var tw=0;for(var i=0;i<lines.length;i++)tw=Math.max(tw,g.measureText(lines[i]).width);
+ var w=tw+16,h=lines.length*lh+8,x=ch.x-w/2,y=ch.y-32-h;
  var _bg=ch.reporting?"#e7f7ec":"#fff",_bd=ch.reporting?"#37a860":"#c3cfd8",_tc=ch.reporting?"#12692f":"#0d1f2d";
- g.globalAlpha=Math.min(1,ch.bubT);g.fillStyle=_bg;g.strokeStyle=_bd;g.lineWidth=ch.reporting?2:1;rrp(x,y,w,22,8);g.fill();g.stroke();
- g.beginPath();g.moveTo(ch.x-5,y+22);g.lineTo(ch.x+5,y+22);g.lineTo(ch.x,y+29);g.closePath();g.fillStyle=_bg;g.fill();
- g.fillStyle=_tc;g.textBaseline="middle";g.textAlign="left";g.fillText(ch.bub,x+8,y+11);g.globalAlpha=1;}
+ g.globalAlpha=Math.min(1,ch.bubT);g.fillStyle=_bg;g.strokeStyle=_bd;g.lineWidth=ch.reporting?2:1;rrp(x,y,w,h,8);g.fill();g.stroke();
+ g.beginPath();g.moveTo(ch.x-5,y+h);g.lineTo(ch.x+5,y+h);g.lineTo(ch.x,y+h+7);g.closePath();g.fillStyle=_bg;g.fill();
+ g.fillStyle=_tc;g.textBaseline="top";g.textAlign="center";
+ for(var i=0;i<lines.length;i++)g.fillText(lines[i],ch.x,y+4+i*lh);
+ g.textAlign="left";g.globalAlpha=1;}
 function drawChar(ch){const step=Math.sin(ch.t*10)*(ch.moving?1:0),x=Math.round(ch.x),y=Math.round(ch.y),f=ch.dir;
  g.fillStyle="rgba(0,0,0,.20)";g.beginPath();g.ellipse(x,y+2,10,4,0,0,7);g.fill();
  g.fillStyle=ch.pants;g.fillRect(x-6,y-9+(step>0?0:1),4,9);g.fillRect(x+2,y-9+(step>0?1:0),4,9);
@@ -251,8 +258,8 @@ function whatsLatest(){var b=document.getElementById('latestBtn'),s=document.get
  b.disabled=true;s.textContent='team is preparing their reporting…';
  fetch('latest_activity.json?t='+Date.now()).then(function(r){return r.json();}).then(function(act){
    s.textContent='now reporting 🟢';var any=false;
-   chars.forEach(function(ch){if(act[ch.name]){ch.bub=act[ch.name].report;ch.bubT=6;ch.reporting=true;any=true;}});
+   chars.forEach(function(ch){if(act[ch.name]){ch.bub=act[ch.name].report;ch.bubT=10;ch.reporting=true;any=true;}});
    if(!any){s.textContent='no ticket activity found';}
-   setTimeout(function(){chars.forEach(function(ch){ch.reporting=false;ch.bubT=0;});s.textContent='';b.disabled=false;},6300);
+   setTimeout(function(){chars.forEach(function(ch){ch.reporting=false;ch.bubT=0;});s.textContent='';b.disabled=false;},10300);
  }).catch(function(){s.textContent='could not load latest';b.disabled=false;});}
 </script></body></html>
