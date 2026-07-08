@@ -4,7 +4,13 @@ html,body{margin:0;height:100%;background:#0d1f2d;font-family:-apple-system,'Seg
 #wrap{display:flex;align-items:center;justify-content:center;min-height:100%;padding:8px;box-sizing:border-box;}
 canvas{width:100%;max-width:1180px;height:auto;border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.55);display:block;}
 #hint{position:fixed;bottom:6px;left:0;right:0;text-align:center;color:#6B7E8F;font-size:11px;font-family:'DM Mono',monospace;}
+#latestbar{position:fixed;top:12px;right:16px;z-index:100;display:flex;align-items:center;gap:10px;}
+#latestBtn{background:#0076BD;color:#fff;border:none;border-radius:22px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);font-family:inherit;}
+#latestBtn:hover{background:#005c94;}#latestBtn:disabled{opacity:.7;cursor:default;}
+#latestSub{color:#0d1f2d;font-size:12px;font-weight:700;font-family:'DM Mono',monospace;background:#e7f7ec;padding:5px 11px;border-radius:14px;box-shadow:0 3px 10px rgba(0,0,0,.2);}
+#latestSub:empty{display:none;}
 </style></head><body><div id="wrap"><canvas id="c" width="1180" height="720"></canvas></div>
+<div id="latestbar"><span id="latestSub"></span><button id="latestBtn" onclick="whatsLatest()">🗞️ What's the latest?</button></div>
 <div id="hint">CIH HQ — agents in-office · people roam (A* pathfinding, no walking through walls/furniture) 🏢</div>
 <script>
 const cv=document.getElementById('c'),g=cv.getContext('2d');
@@ -172,9 +178,10 @@ function drawFurn(o){const {x,y,w,h,rise=8,c}=o;
 }
 // ---------------- CHAR DRAW ----------------
 function bubble(ch){if(ch.bubT<=0)return;g.font="bold 12px 'Segoe UI',Arial";const tw=g.measureText(ch.bub).width,w=tw+16,x=ch.x-w/2,y=ch.y-46;
- g.globalAlpha=Math.min(1,ch.bubT);g.fillStyle="#fff";g.strokeStyle="#c3cfd8";g.lineWidth=1;rrp(x,y,w,22,8);g.fill();g.stroke();
- g.beginPath();g.moveTo(ch.x-5,y+22);g.lineTo(ch.x+5,y+22);g.lineTo(ch.x,y+29);g.closePath();g.fillStyle="#fff";g.fill();
- g.fillStyle="#0d1f2d";g.textBaseline="middle";g.textAlign="left";g.fillText(ch.bub,x+8,y+11);g.globalAlpha=1;}
+ var _bg=ch.reporting?"#e7f7ec":"#fff",_bd=ch.reporting?"#37a860":"#c3cfd8",_tc=ch.reporting?"#12692f":"#0d1f2d";
+ g.globalAlpha=Math.min(1,ch.bubT);g.fillStyle=_bg;g.strokeStyle=_bd;g.lineWidth=ch.reporting?2:1;rrp(x,y,w,22,8);g.fill();g.stroke();
+ g.beginPath();g.moveTo(ch.x-5,y+22);g.lineTo(ch.x+5,y+22);g.lineTo(ch.x,y+29);g.closePath();g.fillStyle=_bg;g.fill();
+ g.fillStyle=_tc;g.textBaseline="middle";g.textAlign="left";g.fillText(ch.bub,x+8,y+11);g.globalAlpha=1;}
 function drawChar(ch){const step=Math.sin(ch.t*10)*(ch.moving?1:0),x=Math.round(ch.x),y=Math.round(ch.y),f=ch.dir;
  g.fillStyle="rgba(0,0,0,.20)";g.beginPath();g.ellipse(x,y+2,10,4,0,0,7);g.fill();
  g.fillStyle=ch.pants;g.fillRect(x-6,y-9+(step>0?0:1),4,9);g.fillRect(x+2,y-9+(step>0?1:0),4,9);
@@ -223,7 +230,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
   if(ch.path.length){const p=ch.path[0],dx=p.x-ch.x,dy=p.y-ch.y,d=Math.hypot(dx,dy);
    if(d<2){ch.path.shift();if(ch.path.length===0&&ch.role==="roam"){ch.wait=0;}}
    else{ch.moving=true;const sp=(ch.role==="roam"?62:34)*dt;ch.x+=dx/d*sp;ch.y+=dy/d*sp;if(Math.abs(dx)>.4)ch.dir=dx>0?1:-1;}}
-  ch.cd-=dt;if(ch.cd<=0){ch.cd=6+R()*10;ch.bub=ch.say[ri(ch.say.length)];ch.bubT=2.8;}if(ch.bubT>0)ch.bubT-=dt;
+  ch.cd-=dt;if(ch.cd<=0&&!ch.reporting){ch.cd=6+R()*10;ch.bub=ch.say[ri(ch.say.length)];ch.bubT=2.8;}if(ch.bubT>0)ch.bubT-=dt;
  }
  // render
  g.fillStyle="#aeb7c0";g.fillRect(0,0,W,H);
@@ -240,4 +247,12 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  const t=new Date();g.textAlign="right";g.fillStyle="#cfe0ee";g.font="13px 'DM Mono',monospace";g.fillText(t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),W-14,TOP/2);g.textAlign="left";
  requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
+function whatsLatest(){var b=document.getElementById('latestBtn'),s=document.getElementById('latestSub');
+ b.disabled=true;s.textContent='team is preparing their reporting…';
+ fetch('latest_activity.json?t='+Date.now()).then(function(r){return r.json();}).then(function(act){
+   s.textContent='now reporting 🟢';var any=false;
+   chars.forEach(function(ch){if(act[ch.name]){ch.bub=act[ch.name].report;ch.bubT=6;ch.reporting=true;any=true;}});
+   if(!any){s.textContent='no ticket activity found';}
+   setTimeout(function(){chars.forEach(function(ch){ch.reporting=false;ch.bubT=0;});s.textContent='';b.disabled=false;},6300);
+ }).catch(function(){s.textContent='could not load latest';b.disabled=false;});}
 </script></body></html>
