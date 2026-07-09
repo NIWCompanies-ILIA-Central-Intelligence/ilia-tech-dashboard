@@ -125,7 +125,7 @@ const chars=[
  C({name:"Dash",role:"agent",home:"Tech Dashboard",skin:"#c47f0a",hair:"#8a5906",shirt:"#c47f0a",pants:"#0d1f2d",bot:true,say:["deploy green ✅","masking PII…","tabs live"]}),
  C({name:"PM",role:"agent",home:"PM Portal",skin:"#5b7085",hair:"#3d4c59",shirt:"#5b7085",pants:"#0d1f2d",bot:true,say:["standup in 5!","Jira good","triaging…"]}),
  C({name:"Judy",role:"roam",skin:"#f6cfa6",hair:"#caa04a",shirt:"#0076BD",pants:"#33414d",say:["Looks great!","approved ✅","nice work team"]}),
- C({name:"Jamin",role:"roam",skin:"#f2c39a",hair:"#e8c451",glasses:true,shirt:"#2b3a67",pants:"#33414d",say:["on it.","ship it 🚀","let's go"]}),
+ C({name:"Jamin",role:"roam",bald:true,skin:"#f2c39a",hair:"#e8c451",glasses:true,shirt:"#2b3a67",pants:"#33414d",say:["on it.","ship it 🚀","let's go"]}),
  C({name:"Kyle",role:"roam",skin:"#f0c39a",hair:"#7a4a24",shirt:"#e07b1a",pants:"#33414d",say:["testing…","seeder ✅","🎧"]}),
  C({name:"Olivia",role:"roam",skin:"#f7cbb0",hair:"#8a5a3a",shirt:"#12a6c4",pants:"#33414d",say:["call notes 📝","synced ✅","👍"]}),
  C({name:"Shounak",role:"roam",skin:"#d9a273",hair:"#241a12",beard:true,shirt:"#3b4a63",pants:"#33414d",say:["11 not 12","scraper fix","LGTM 👍"]}),
@@ -134,7 +134,7 @@ const chars=[
  C({name:"Amir",role:"roam",vest:true,skin:"#b87a45",hair:"#20160f",shirt:"#243b63",pants:"#222",say:["on track","reviewing…","great work"]}),
  C({name:"Sanjay",role:"roam",vest:true,skin:"#c98a55",hair:"#181109",shirt:"#243b63",pants:"#222",say:["DOMO access?","read-only 🔒","👍"]}),
  C({name:"Mario",role:"roam",vest:true,skin:"#e6b98f",hair:"#2a1c10",shirt:"#243b63",pants:"#222",say:["let's go","aligned","☕☕"]}),
- C({name:"Mohit",role:"roam",skin:"#caa06a",hair:"#0f0f0f",shirt:"#374151",pants:"#222",say:["Ok, fine."]}),
+ C({name:"Mohit",role:"roam",firefighter:true,skin:"#caa06a",hair:"#0f0f0f",shirt:"#374151",pants:"#222",say:["Ok, fine.","fire drill again?","where's the 🧯"]}),
  C({name:"Chris",role:"roam",skin:"#e8c4a0",hair:"#4a3520",shirt:"#2f6b4f",pants:"#33414d",say:["let's review","good call","on it","👍"]}),
 ];
 chars.forEach(ch=>{ if(ch.role==="roam"){const c=Math.round((IX0+40+R()*(IX1-IX0-80))/CELL),r=Math.round(CY/CELL);const p=cc(c,r);ch.x=p.x;ch.y=p.y;ch.room=null;}
@@ -198,13 +198,14 @@ function drawChar(ch){const step=Math.sin(ch.t*10)*(ch.moving?1:0),x=Math.round(
  g.fillStyle=ch.vest?"#eef2f7":ch.shirt;g.fillRect(x-9,y-19,3,8);g.fillRect(x+6,y-19,3,8);
  g.fillStyle=ch.skin;g.fillRect(x-9,y-12,3,3);g.fillRect(x+6,y-12,3,3);
  g.fillStyle=ch.skin;g.fillRect(x-6,y-31,12,12);
- g.fillStyle=ch.hair;g.fillRect(x-7,y-33,14,5);g.fillRect(x-7,y-31,3,6);g.fillRect(x+4,y-31,3,6);
+ if(!ch.bald){g.fillStyle=ch.hair;g.fillRect(x-7,y-33,14,5);g.fillRect(x-7,y-31,3,6);g.fillRect(x+4,y-31,3,6);}
  if(ch.bot){g.fillStyle="#cfe8ff";g.fillRect(x-1,y-38,2,5);g.fillStyle="#ff5f57";g.fillRect(x-2,y-40,4,3);}
  if(ch.beard){g.fillStyle=ch.hair;g.fillRect(x-6,y-22,12,3);g.fillRect(x-6,y-24,2,2);g.fillRect(x+4,y-24,2,2);}
  g.fillStyle="#1a1a1a";const ex=f>0?0:-2;g.fillRect(x-3+ex,y-27,2,2);g.fillRect(x+2+ex,y-27,2,2);
  if(ch.glasses){g.strokeStyle="#1a1a1a";g.lineWidth=1;g.strokeRect(x-4+ex,y-28,3,3);g.strokeRect(x+1+ex,y-28,3,3);}
  if(ch.badge){g.font="bold 8px Arial";const bw=g.measureText(ch.badge).width+6;g.fillStyle=ch.badge==="CEO"?"#C79A3B":"#DB2777";rrp(x-bw/2,y-46,bw,10,4);g.fill();g.fillStyle="#fff";g.textBaseline="middle";g.textAlign="left";g.fillText(ch.badge,x-bw/2+3,y-41);g.font="9px Arial";g.fillStyle=ch.badge==="CEO"?"#C79A3B":"#f5c542";g.fillText(ch.badge==="CEO"?"♛":"★",x-4,y-49);}
  g.font="10px 'Segoe UI',Arial";g.fillStyle="#0d1f2d";g.textAlign="center";g.textBaseline="top";g.fillText(ch.name,x,y+4);g.textAlign="left";
+ if(ch.spraying)drawSpray(ch);
  bubble(ch);}
 // ---------------- FLOOR + WALLS ----------------
 function floorTiles(r){ g.fillStyle=r.fl;g.fillRect(r.x,r.y,r.w,r.h);
@@ -228,10 +229,47 @@ function drawWalls(){ const T=8;
   g.fillStyle=r.a;g.globalAlpha=.5;g.fillRect(r.doorX-18,(r.side==="top")?CT-3:CB-5,36,9);g.globalAlpha=1;}}
 function doorSign(r){g.font="bold 12px 'Segoe UI',Arial";const tw=g.measureText(r.s).width,w=tw+14,y=(r.side==="top")?CT-12:CB+4,x=r.doorX-w/2;
  g.fillStyle="rgba(0,0,0,.2)";rrp(x+1,y+1,w,16,5);g.fill();g.fillStyle=r.a;rrp(x,y,w,16,5);g.fill();g.fillStyle="#fff";g.textBaseline="middle";g.textAlign="left";g.fillText(r.s,x+7,y+9);}
+// ---------------- FIRE + FIRE MARSHAL (only Mohit responds) ----------------
+const fires=[]; const MAX_FIRES=5; let fireTimer=2+R()*4;
+function randBuildingCell(){ for(let i=0;i<90;i++){ const c=1+ri(COLS-2), r=Math.floor(IY0/CELL)+ri(Math.floor((IY1-IY0)/CELL)); if(free(c,r)) return [c,r]; } return null; }
+function spawnFire(){ if(fires.length>=MAX_FIRES) return; const cell=randBuildingCell(); if(!cell) return;
+ if(fires.some(f=>f.cell[0]===cell[0]&&f.cell[1]===cell[1])) return; const p=cc(cell[0],cell[1]);
+ fires.push({x:p.x,y:p.y,cell,t:R()*3,state:"burning",dousing:0,outT:0}); }
+function handleFire(dt){ fireTimer-=dt;
+ if(fireTimer<=0){ fireTimer=4+R()*9; if(R()<0.9) spawnFire(); if(R()<0.18) spawnFire(); }
+ for(let i=fires.length-1;i>=0;i--){ const f=fires[i]; f.t+=dt; if(f.state==="out"){ f.outT+=dt; if(f.outT>0.7) fires.splice(i,1); } } }
+function mohitFight(ch,dt){
+ if(ch.target && ch.target.state!=="burning"){ ch.target=null; ch.spraying=false; ch.spray=0; }
+ if(!ch.target){ let best=null,bd=1e9; for(const f of fires){ if(f.state!=="burning")continue; const d=Math.hypot(f.x-ch.x,f.y-ch.y); if(d<bd){bd=d;best=f;} }
+   if(best){ ch.target=best; const [sc,sr]=cellOf(ch.x,ch.y); const path=astar(sc,sr,best.cell[0],best.cell[1],null); ch.path=path?path.map(([c,r])=>cc(c,r)):[]; ch.bub="🔥 on it!"; ch.bubT=1.6; } }
+ if(ch.target){ const d=Math.hypot(ch.target.x-ch.x,ch.target.y-ch.y);
+   if(d<26){ ch.moving=false; ch.spraying=true; ch.path=[]; ch.dir=ch.target.x>=ch.x?1:-1; ch.spray=(ch.spray||0)+dt; ch.target.dousing+=dt;
+     if(ch.target.dousing>1.6){ ch.target.state="out"; ch.bub="got it 🧯"; ch.bubT=1.8; ch.spraying=false; ch.target=null; } }
+   else if(ch.path.length){ ch.spraying=false; const p=ch.path[0],dx=p.x-ch.x,dy=p.y-ch.y,dd=Math.hypot(dx,dy);
+     if(dd<2){ch.path.shift();} else{ ch.moving=true; const sp=Math.min(dd,72*dt); ch.x+=dx/dd*sp; ch.y+=dy/dd*sp; if(Math.abs(dx)>.4)ch.dir=dx>0?1:-1; } }
+   else { ch.spraying=false; const [sc,sr]=cellOf(ch.x,ch.y); const path=astar(sc,sr,ch.target.cell[0],ch.target.cell[1],null); ch.path=path?path.map(([c,r])=>cc(c,r)):[]; if(!path)ch.target=null; } } }
+function flameShape(x,baseY,w,h){ g.beginPath(); g.moveTo(x-w,baseY);
+ g.bezierCurveTo(x-w,baseY-h*0.6,x-w*0.4,baseY-h*0.8,x-w*0.15,baseY-h);
+ g.bezierCurveTo(x,baseY-h*1.12,x,baseY-h*1.12,x+w*0.15,baseY-h);
+ g.bezierCurveTo(x+w*0.4,baseY-h*0.8,x+w,baseY-h*0.6,x+w,baseY);
+ g.quadraticCurveTo(x,baseY+5,x-w,baseY); g.closePath(); g.fill(); }
+function drawFire(f){ const x=Math.round(f.x),y=Math.round(f.y); const flick=(Math.sin(f.t*17)+Math.sin(f.t*6.7))*1.4;
+ g.save(); const gl=g.createRadialGradient(x,y-6,2,x,y-6,28); gl.addColorStop(0,"rgba(255,150,40,.5)"); gl.addColorStop(1,"rgba(255,110,0,0)"); g.fillStyle=gl; g.beginPath(); g.arc(x,y-6,28,0,7); g.fill();
+ if(f.state==="out"){ g.globalAlpha=Math.max(0,.55-f.outT); g.fillStyle="#9aa4ad"; g.beginPath(); g.arc(x,y-14-f.outT*12,11,0,7); g.fill(); g.globalAlpha=1; g.restore();
+   g.fillStyle="rgba(90,90,90,.3)"; g.beginPath(); g.ellipse(x,y+2,8,3,0,0,7); g.fill(); return; }
+ const h=15+flick; g.fillStyle="#ff6a12"; flameShape(x,y,10,h+8); g.fillStyle="#ffab2b"; flameShape(x,y-1,6.5,h); g.fillStyle="#ffe680"; flameShape(x,y-2,3.5,h-6);
+ g.restore(); g.fillStyle="rgba(120,40,0,.35)"; g.beginPath(); g.ellipse(x,y+2,9,3,0,0,7); g.fill(); }
+function drawSpray(ch){ const x=Math.round(ch.x),y=Math.round(ch.y),f=ch.dir;
+ g.fillStyle="#c62828"; g.fillRect(x+(f>0?6:-11),y-19,5,11); g.fillStyle="#7a1616"; g.fillRect(x+(f>0?6:-11),y-19,5,2);
+ const nx=x+(f>0?12:-12),ny=y-16;
+ for(let i=0;i<12;i++){ const r=R(); const dx=(14+R()*26)*f, dy=(R()-.5)*(18+r*14); g.globalAlpha=.5+R()*.4; g.fillStyle=R()<.5?"#f2f8ff":"#d3e3ee"; g.beginPath(); g.arc(nx+dx*r,ny+dy*r,1.6+R()*3.2,0,7); g.fill(); }
+ g.globalAlpha=1; }
 // ---------------- LOOP ----------------
 let last=performance.now();
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+ handleFire(dt); const anyBurning=fires.some(f=>f.state==="burning");
  for(const ch of chars){ch.t+=dt;
+  if(ch.firefighter){ if(anyBurning){ mohitFight(ch,dt); if(ch.bubT>0)ch.bubT-=dt; continue; } else { ch.spraying=false; ch.target=null; } }
   if(ch.wait>0){ch.wait-=dt;ch.moving=false;}
   else if(ch.path.length===0){ if(ch.role==="roam"&&ch.nextRoom){ch.room=ch.nextRoom;ch.nextRoom=null;ch.wait=1+R()*3;} else {replan(ch); if(ch.role==="agent"||ch.role==="ceo"){} ch.wait=ch.path.length?0:0.4+R()*1.5;} }
   if(ch.path.length){const p=ch.path[0],dx=p.x-ch.x,dy=p.y-ch.y,d=Math.hypot(dx,dy);
@@ -247,11 +285,13 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  drawWalls();
  for(const r of rooms) doorSign(r);
  const draws=[]; for(const o of furn) draws.push({y:o.baseY,f:()=>drawFurn(o)}); for(const ch of chars) draws.push({y:ch.y,f:()=>drawChar(ch)});
+ for(const f of fires) draws.push({y:f.y+1,f:()=>drawFire(f)});
  draws.sort((a,b)=>a.y-b.y); for(const d of draws) d.f();
  // title
  g.fillStyle="#0d1f2d";g.fillRect(0,0,W,TOP);g.fillStyle="#fff";g.font="bold 18px 'Segoe UI',Arial";g.textBaseline="middle";g.textAlign="left";g.fillText("🏢  CIH Headquarters",14,TOP/2);
  g.font="12px 'DM Mono',monospace";g.fillStyle="#8fb5d6";g.fillText("agents in-office · NIW + Simplicity roaming",214,TOP/2+1);
  const t=new Date();g.textAlign="right";g.fillStyle="#cfe0ee";g.font="13px 'DM Mono',monospace";g.fillText(t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),W-14,TOP/2);g.textAlign="left";
+ if(fires.length){g.textAlign="right";g.fillStyle="#ffab2b";g.font="bold 12px 'Segoe UI',Arial";g.fillText("🔥 "+fires.length+" active — Mohit responding",W-96,TOP/2);g.textAlign="left";}
  requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 function whatsLatest(){var b=document.getElementById('latestBtn'),s=document.getElementById('latestSub');
