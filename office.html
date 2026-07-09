@@ -2,20 +2,20 @@
 <title>CIH Headquarters</title><style>
 html,body{margin:0;height:100%;background:#0d1f2d;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;}
 #wrap{display:flex;align-items:center;justify-content:center;min-height:100%;padding:8px;box-sizing:border-box;}
-canvas{width:100%;max-width:1180px;height:auto;border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.55);display:block;}
+canvas{width:100%;max-width:1460px;height:auto;border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.55);display:block;}
 #hint{position:fixed;bottom:6px;left:0;right:0;text-align:center;color:#6B7E8F;font-size:11px;font-family:'DM Mono',monospace;}
 #latestbar{position:fixed;top:12px;right:16px;z-index:100;display:flex;align-items:center;gap:10px;}
 #latestBtn{background:#0076BD;color:#fff;border:none;border-radius:22px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);font-family:inherit;}
 #latestBtn:hover{background:#005c94;}#latestBtn:disabled{opacity:.7;cursor:default;}
 #latestSub{color:#0d1f2d;font-size:12px;font-weight:700;font-family:'DM Mono',monospace;background:#e7f7ec;padding:5px 11px;border-radius:14px;box-shadow:0 3px 10px rgba(0,0,0,.2);}
 #latestSub:empty{display:none;}
-</style></head><body><div id="wrap"><canvas id="c" width="1180" height="720"></canvas></div>
+</style></head><body><div id="wrap"><canvas id="c" width="1460" height="720"></canvas></div>
 <div id="latestbar"><span id="latestSub"></span><button id="latestBtn" onclick="whatsLatest()">🗞️ What's the latest?</button></div>
 <div id="hint">CIH HQ — agents in-office · people roam (A* pathfinding, no walking through walls/furniture) 🏢</div>
 <script>
 const cv=document.getElementById('c'),g=cv.getContext('2d');
-const W=1180,H=720,TOP=44,CELL=20;
-const IX0=20,IX1=1160,IY0=44,IY1=716,CT=344,CB=404,CY=374;
+const W=1460,H=720,TOP=44,CELL=20;
+const IX0=20,IX1=1440,IY0=44,IY1=716,CT=344,CB=404,CY=374,SIMX=1160;
 const COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL);
 const R=Math.random,ri=n=>Math.floor(R()*n);
 // ---------------- ROOMS ----------------
@@ -31,8 +31,9 @@ const rooms=[
  {s:"PM Portal",x:590,y:CB,w:190,side:"bot",a:"#5b7085",fl:"#EDF1F4",theme:"pm"},
  {s:"Break Room",x:780,y:CB,w:190,side:"bot",a:"#8a6d3b",fl:"#F3EEE6",theme:"break"},
  {s:"Restroom",x:970,y:CB,w:190,side:"bot",a:"#38808f",fl:"#E8F1F2",theme:"rest"},
+ {s:"Simsaw",x:1160,y:IY0,w:280,side:"full",a:"#b45309",fl:"#FBEFDD",theme:"sim"},
 ];
-rooms.forEach(r=>{r.h=(r.side==="top")?(CT-IY0):(IY1-CB);r.doorX=Math.round((Math.max(r.x+40,Math.min(r.x+r.w-40,r.x+r.w/2)))/CELL)*CELL;});
+rooms.forEach(r=>{r.h=(r.side==="full")?(IY1-IY0):((r.side==="top")?(CT-IY0):(IY1-CB));r.doorX=Math.round((Math.max(r.x+40,Math.min(r.x+r.w-40,r.x+r.w/2)))/CELL)*CELL;});
 const byShort={};rooms.forEach(r=>byShort[r.s]=r);
 // ---------------- GRID / COLLISION ----------------
 const blocked=Array.from({length:ROWS},()=>new Uint8Array(COLS));
@@ -49,8 +50,10 @@ function buildWalls(){
  for(const xx of [300,520,720,940]) block(xx-4,IY0,8,CT-IY0);
  for(const xx of [210,400,590,780,970]) block(xx-4,CB,8,IY1-CB);
  // corridor walls (full) then open door gaps
- block(IX0,CT-4,IX1-IX0,8); block(IX0,CB-4,IX1-IX0,8);
- for(const r of rooms){ const gy=(r.side==="top")?CT-4:CB-4; open(r.doorX-20,gy-2,40,12); }
+ block(IX0,CT-4,SIMX-IX0,8); block(IX0,CB-4,SIMX-IX0,8);
+ // Simsaw full-height wall on the right, with a door into the corridor
+ block(SIMX-4,IY0,8,IY1-IY0); open(SIMX-10,CY-24,20,48);
+ for(const r of rooms){ if(r.side==="full") continue; const gy=(r.side==="top")?CT-4:CB-4; open(r.doorX-20,gy-2,40,12); }
  // mark region above IY0 within corridor sides as blocked handled by outer
 }
 // ---------------- FURNITURE ----------------
@@ -84,6 +87,12 @@ function build(r){const x=r.x,y=r.y,w=r.w,h=r.h,cx=x+w/2, th=r.theme, botWallY=(
    F({kind:"foos",x:x+22,y:y+h-46,w:56,h:26,rise:12,room:r}); F({kind:"plant",x:x+w-30,y:topInner+6,w:16,h:14,room:r}); }
  else if(th==="rest"){ r.tile="check"; F({kind:"counter",x:x+16,y:topInner,w:w-32,h:16,rise:14,room:r,c:"#dfe6ea",wall:true,sink:true});
    F({kind:"stall",x:x+18,y:y+h-70,w:44,h:52,rise:20,room:r}); F({kind:"stall",x:x+72,y:y+h-70,w:44,h:52,rise:20,room:r}); }
+ else if(th==="sim"){ // Simsaw team bullpen (full-height room, right side)
+   F({kind:"board",x:cx-70,y:y+14,w:140,h:12,rise:22,room:r,c:"#fff",wall:true,kanban:true});
+   const DK=(kx,ky)=>{F({kind:"desk",x:kx,y:ky,w:80,h:16,rise:9,room:r});F({kind:"chair",x:kx+30,y:ky+20,w:22,h:14,rise:8,room:r,c:"#334"});};
+   DK(x+150,y+110); DK(x+150,y+280); DK(x+150,y+470);
+   DK(x+24,y+110); DK(x+24,y+560);
+   F({kind:"plant",x:x+w-34,y:y+h-38,w:16,h:14,room:r}); F({kind:"plant",x:x+22,y:y+h-38,w:16,h:14,room:r}); }
  else { // portal / lab / mktg generic office
    D(x+22,y+h-64,84); F({kind:"chair",x:x+52,y:y+h-44,w:22,h:14,rise:8,room:r,c:"#334"});
    if(th==="lab"){F({kind:"shelf",x:x+w-46,y:y+42,w:34,h:16,rise:28,room:r,c:"#4a6b3a"});F({kind:"bench",x:x+18,y:y+42,w:60,h:18,rise:12,room:r,c:"#8a7a5a"});}
@@ -93,7 +102,7 @@ function build(r){const x=r.x,y=r.y,w=r.w,h=r.h,cx=x+w/2, th=r.theme, botWallY=(
 }
 buildWalls(); rooms.forEach(build);
 // keep doorway approach cells clear
-for(const r of rooms){ const gy=(r.side==="top")?CT-4:CB-4; open(r.doorX-18,gy-2,36,12); open(r.doorX-14,(r.side==="top")?CT-24:CB+6,28,20); }
+for(const r of rooms){ if(r.side==="full"){ open(SIMX-6,CY-20,24,40); continue; } const gy=(r.side==="top")?CT-4:CB-4; open(r.doorX-18,gy-2,36,12); open(r.doorX-14,(r.side==="top")?CT-24:CB+6,28,20); }
 // ---------------- A* ----------------
 function cellOf(px,py){return [Math.max(0,Math.min(COLS-1,Math.floor(px/CELL))),Math.max(0,Math.min(ROWS-1,Math.floor(py/CELL)))];}
 function free(c,r,bnd){ if(c<0||r<0||c>=COLS||r>=ROWS)return false; if(blocked[r][c])return false;
@@ -136,8 +145,15 @@ const chars=[
  C({name:"Mario",role:"roam",vest:true,skin:"#e6b98f",hair:"#2a1c10",shirt:"#243b63",pants:"#222",say:["let's go","aligned","☕☕"]}),
  C({name:"Mohit",role:"roam",firefighter:true,skin:"#caa06a",hair:"#0f0f0f",shirt:"#374151",pants:"#222",say:["Ok, fine.","fire drill again?","where's the 🧯"]}),
  C({name:"Chris",role:"roam",skin:"#e8c4a0",hair:"#4a3520",shirt:"#2f6b4f",pants:"#33414d",say:["let's review","good call","on it","👍"]}),
+ C({name:"Sachin",role:"agent",home:"Simsaw",skin:"#d9a06b",hair:"#1c130b",shirt:"#2563eb",pants:"#243b2f",say:["build passing ✅","deploy done","on it"]}),
+ C({name:"Tejveer",role:"agent",home:"Simsaw",skin:"#caa06a",hair:"#0f0f0f",shirt:"#0e7490",pants:"#243b2f",say:["API ready","merged ✅","testing…"]}),
+ C({name:"Anoop",role:"agent",home:"Simsaw",skin:"#e0b487",hair:"#1a1208",shirt:"#7c3aed",pants:"#243b2f",say:["refactor…","LGTM 👍","shipping"]}),
+ C({name:"Aniruddh",role:"agent",home:"Simsaw",skin:"#c98a55",hair:"#120c06",shirt:"#dc2626",pants:"#243b2f",say:["debugging 🐛","fixed it","👍"]}),
+ C({name:"Busharma",role:"agent",home:"Simsaw",skin:"#d6a373",hair:"#1b130a",shirt:"#059669",pants:"#243b2f",say:["query tuned","cache warm","📊"]}),
+ C({name:"Nick",role:"agent",home:"Simsaw",skin:"#f0c8a4",hair:"#5a3b22",shirt:"#ea580c",pants:"#243b2f",say:["standup?","reviewing…","ship it 🚀"]}),
+ C({name:"Anmol",role:"agent",home:"Simsaw",skin:"#caa06a",hair:"#0f0f0f",shirt:"#0891b2",pants:"#243b2f",say:["docs updated","synced ✅","👍"]}),
 ];
-chars.forEach(ch=>{ if(ch.role==="roam"){const c=Math.round((IX0+40+R()*(IX1-IX0-80))/CELL),r=Math.round(CY/CELL);const p=cc(c,r);ch.x=p.x;ch.y=p.y;ch.room=null;}
+chars.forEach(ch=>{ if(ch.role==="roam"){const c=Math.round((IX0+40+R()*(SIMX-IX0-80))/CELL),r=Math.round(CY/CELL);const p=cc(c,r);ch.x=p.x;ch.y=p.y;ch.room=null;}
  else {const rm=byShort[ch.home];const [c,rr]=randFreeCell(rm);const p=cc(c,rr);ch.x=p.x;ch.y=p.y;ch.room=rm;} });
 function replan(ch){ const [sc,sr]=cellOf(ch.x,ch.y);
  if(ch.role==="roam"){ const T=rooms[ri(rooms.length)]; const [gc,gr]=randFreeCell(T);
@@ -219,15 +235,20 @@ function drawWalls(){ const T=8;
  wall3(IX0-T,IY0-T,IX1-IX0+2*T,T);wall3(IX0-T,IY1,IX1-IX0+2*T,T);wall3(IX0-T,IY0-T,T,IY1-IY0+2*T);wall3(IX1,IY0-T,T,IY1-IY0+2*T);
  for(const xx of [300,520,720,940]) wall3(xx-4,IY0,8,CT-IY0);
  for(const xx of [210,400,590,780,970]) wall3(xx-4,CB,8,IY1-CB);
+ // Simsaw full-height wall (two segments leaving the corridor door open)
+ wall3(SIMX-4,IY0,8,(CY-24)-IY0); wall3(SIMX-4,CY+24,8,IY1-(CY+24));
  // corridor horizontal walls with door gaps
  const tg=rooms.filter(r=>r.side==="top").map(r=>[r.doorX-20,r.doorX+20]).sort((a,b)=>a[0]-b[0]);
  const bg=rooms.filter(r=>r.side==="bot").map(r=>[r.doorX-20,r.doorX+20]).sort((a,b)=>a[0]-b[0]);
- let cx=IX0;for(const gp of tg){if(gp[0]>cx)wall3(cx,CT-4,gp[0]-cx,8);cx=gp[1];}if(cx<IX1)wall3(cx,CT-4,IX1-cx,8);
- cx=IX0;for(const gp of bg){if(gp[0]>cx)wall3(cx,CB-4,gp[0]-cx,8);cx=gp[1];}if(cx<IX1)wall3(cx,CB-4,IX1-cx,8);
+ let cx=IX0;for(const gp of tg){if(gp[0]>cx)wall3(cx,CT-4,gp[0]-cx,8);cx=gp[1];}if(cx<SIMX)wall3(cx,CT-4,SIMX-cx,8);
+ cx=IX0;for(const gp of bg){if(gp[0]>cx)wall3(cx,CB-4,gp[0]-cx,8);cx=gp[1];}if(cx<SIMX)wall3(cx,CB-4,SIMX-cx,8);
  // doorway posts
- for(const r of rooms){const gy=(r.side==="top")?CT-4:CB-4;g.fillStyle="#856848";g.fillRect(r.doorX-22,gy,3,8);g.fillRect(r.doorX+19,gy,3,8);
-  g.fillStyle=r.a;g.globalAlpha=.5;g.fillRect(r.doorX-18,(r.side==="top")?CT-3:CB-5,36,9);g.globalAlpha=1;}}
-function doorSign(r){g.font="bold 12px 'Segoe UI',Arial";const tw=g.measureText(r.s).width,w=tw+14,y=(r.side==="top")?CT-12:CB+4,x=r.doorX-w/2;
+ for(const r of rooms){if(r.side==="full")continue;const gy=(r.side==="top")?CT-4:CB-4;g.fillStyle="#856848";g.fillRect(r.doorX-22,gy,3,8);g.fillRect(r.doorX+19,gy,3,8);
+  g.fillStyle=r.a;g.globalAlpha=.5;g.fillRect(r.doorX-18,(r.side==="top")?CT-3:CB-5,36,9);g.globalAlpha=1;}
+ // Simsaw vertical door (posts + accent strip)
+ g.fillStyle="#856848";g.fillRect(SIMX-4,CY-27,8,3);g.fillRect(SIMX-4,CY+24,8,3);
+ g.fillStyle=byShort["Simsaw"].a;g.globalAlpha=.5;g.fillRect(SIMX-5,CY-23,9,47);g.globalAlpha=1;}
+function doorSign(r){g.font="bold 12px 'Segoe UI',Arial";const tw=g.measureText(r.s).width,w=tw+14,y=(r.side==="full")?(IY0+6):((r.side==="top")?CT-12:CB+4),x=(r.side==="full")?(r.x+r.w/2-w/2):(r.doorX-w/2);
  g.fillStyle="rgba(0,0,0,.2)";rrp(x+1,y+1,w,16,5);g.fill();g.fillStyle=r.a;rrp(x,y,w,16,5);g.fill();g.fillStyle="#fff";g.textBaseline="middle";g.textAlign="left";g.fillText(r.s,x+7,y+9);}
 // ---------------- FIRE + FIRE MARSHAL (only Mohit responds) ----------------
 const fires=[]; const MAX_FIRES=5; let fireTimer=2+R()*4;
@@ -279,8 +300,8 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  }
  // render
  g.fillStyle="#aeb7c0";g.fillRect(0,0,W,H);
- g.fillStyle="#c3ccd5";g.fillRect(IX0,CT,IX1-IX0,CB-CT); // corridor
- g.strokeStyle="rgba(0,0,0,.05)";for(let i=IX0;i<IX1;i+=CELL){g.beginPath();g.moveTo(i,CT);g.lineTo(i,CB);g.stroke();}
+ g.fillStyle="#c3ccd5";g.fillRect(IX0,CT,SIMX-IX0,CB-CT); // corridor
+ g.strokeStyle="rgba(0,0,0,.05)";for(let i=IX0;i<SIMX;i+=CELL){g.beginPath();g.moveTo(i,CT);g.lineTo(i,CB);g.stroke();}
  for(const r of rooms) floorTiles(r);
  drawWalls();
  for(const r of rooms) doorSign(r);
