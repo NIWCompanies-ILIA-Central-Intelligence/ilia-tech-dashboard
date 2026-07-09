@@ -88,7 +88,6 @@ function build(r){const x=r.x,y=r.y,w=r.w,h=r.h,cx=x+w/2, th=r.theme, botWallY=(
  else if(th==="rest"){ r.tile="check"; F({kind:"counter",x:x+16,y:topInner,w:w-32,h:16,rise:14,room:r,c:"#dfe6ea",wall:true,sink:true});
    F({kind:"stall",x:x+18,y:y+h-70,w:44,h:52,rise:20,room:r}); F({kind:"stall",x:x+72,y:y+h-70,w:44,h:52,rise:20,room:r}); }
  else if(th==="sim"){ // Simsaw team bullpen (full-height room, right side)
-   F({kind:"board",x:cx-70,y:y+14,w:140,h:12,rise:22,room:r,c:"#fff",wall:true,kanban:true});
    const DK=(kx,ky)=>{F({kind:"desk",x:kx,y:ky,w:80,h:16,rise:9,room:r});F({kind:"chair",x:kx+30,y:ky+20,w:22,h:14,rise:8,room:r,c:"#334"});};
    DK(x+150,y+110); DK(x+150,y+280); DK(x+150,y+470);
    DK(x+24,y+110); DK(x+24,y+560);
@@ -156,7 +155,7 @@ const chars=[
 chars.forEach(ch=>{ if(ch.role==="roam"){const c=Math.round((IX0+40+R()*(SIMX-IX0-80))/CELL),r=Math.round(CY/CELL);const p=cc(c,r);ch.x=p.x;ch.y=p.y;ch.room=null;}
  else {const rm=byShort[ch.home];const [c,rr]=randFreeCell(rm);const p=cc(c,rr);ch.x=p.x;ch.y=p.y;ch.room=rm;} });
 function replan(ch){ const [sc,sr]=cellOf(ch.x,ch.y);
- if(ch.role==="roam"){ const T=rooms[ri(rooms.length)]; const [gc,gr]=randFreeCell(T);
+ if(ch.role==="roam"){ const pool=ch.firefighter?rooms:rooms.filter(rr=>rr.side!=="full"); const T=pool[ri(pool.length)]; const [gc,gr]=randFreeCell(T);
    const path=astar(sc,sr,gc,gr,null); if(path){ch.path=path.map(([c,r])=>cc(c,r));ch.nextRoom=T;} else ch.wait=0.5; }
  else { const rm=byShort[ch.home]; const bnd={x0:rm.x+4,x1:rm.x+rm.w-4,y0:rm.y+4,y1:rm.y+rm.h-4};
    const [gc,gr]=randFreeCell(rm); const path=astar(sc,sr,gc,gr,bnd); if(path)ch.path=path.map(([c,r])=>cc(c,r)); else ch.wait=0.5; } }
