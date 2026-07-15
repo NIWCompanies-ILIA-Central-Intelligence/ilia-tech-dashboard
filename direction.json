@@ -1,16 +1,31 @@
 {
-  "updated": "2026-07-10",
+  "updated": "2026-07-14",
   "sample": false,
   "intro": "Dev-call intelligence — the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
-  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static — the on-page button reloads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
+  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static — the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
   "goals": [
+    "Simplify the enrollment model and move GWT invitations to an agent-driven flow (Jamin mocking up the workflow).",
+    "Stand up surrender-workflow logging + automated admin email notifications when a case is marked surrendered.",
+    "Fix the ePay data discrepancy — some transactions missing tranche numbers and client names.",
     "Nail down loan-reconciliation logic — paydowns applied directly to balances (no interest), with consistent case-details balance formulas.",
-    "Close the trust-date data gaps — run the trust-date script against the tranches DOMO shows as missing.",
-    "Finish Master Settlor infrastructure so GWT/DBR automation can begin.",
-    "Get Tranche Management fully working & verified; keep the confirmation-statement scraper reliable.",
-    "Clear the urgent National Life hotfixes."
+    "Close the trust-date data gaps — run the trust-date script against the tranches DOMO shows as missing."
   ],
   "blockers": [
+    {
+      "title": "GWT flow not yet re-mocked as agent-driven",
+      "ask": "Create diagrams/mockups for the simplified agent-driven GWT invitation flow and present to the team (Jamin).",
+      "task": null
+    },
+    {
+      "title": "Surrender notifications + logging not built",
+      "ask": "Add system email notifications to admins when a case status flips to surrendered; improve surrender logging (Olivia).",
+      "task": null
+    },
+    {
+      "title": "ePay transactions missing tranche # / client names",
+      "ask": "Root-cause the data discrepancy from the provided email examples (Mohit).",
+      "task": null
+    },
     {
       "title": "Loan-paydown / reconciliation logic not yet tasked",
       "ask": "Task the case-details field + paydown logic so balance formulas are consistent (Shounak).",
@@ -20,65 +35,50 @@
       "title": "Missing trust-date data across tranches",
       "ask": "Identify which tranches need the trust-date script (compare missing data in DOMO), then run it (group/Mohit).",
       "task": null
-    },
-    {
-      "title": "Policy notices pending — Tranches 15 & 20",
-      "ask": "Verify remaining policies, then send notices (Mohit).",
-      "task": null
-    },
-    {
-      "title": "Master Settlor signer-role edit incomplete",
-      "ask": "Finish signer-role editing so DBR can start.",
-      "task": null
-    },
-    {
-      "title": "Confirmation statements missing — Tranche 1 & 25",
-      "ask": "Scraper under investigation (~2 weeks past anniversary).",
-      "task": null
     }
   ],
   "needs_tasked": [
     {
-      "t": "Case-details field + loan-paydown logic — document so balance formulas stay consistent",
-      "pm": "Shounak"
+      "t": "GWT simplified to agent-driven — build diagrams/mockups + present the workflow",
+      "pm": "Jamin"
     },
     {
-      "t": "Bank reconciliation field on case details + update estimated loan-balance formulas",
-      "pm": "Shounak"
-    },
-    {
-      "t": "Run trust-date script — ID tranches needing it via DOMO missing-data compare, then execute",
-      "pm": "Mohit"
-    },
-    {
-      "t": "Send policy notices for Tranches 15 & 20 after verifying remaining policies",
-      "pm": "Mohit"
-    },
-    {
-      "t": "Reclassify client change requests from bugs → tasks (PM alignment)",
+      "t": "Surrender workflow — admin email notifications on status = surrendered + improved logging",
       "pm": "Olivia"
+    },
+    {
+      "t": "ePay data discrepancy — investigate missing tranche numbers / client names on certain transactions",
+      "pm": "Mohit"
+    },
+    {
+      "t": "Agent-account migration — transfer two agents (•••) to a consolidated agent account, no data lost",
+      "pm": "Mohit"
+    },
+    {
+      "t": "Annual review report — check yellow highlights + comment on pending orange items",
+      "pm": "Shounak"
     }
   ],
   "latest_call": {
     "title": "Dev Meeting",
-    "date": "Fri · Jul 10, 2026",
+    "date": "Tue · Jul 14, 2026",
     "source": "via Gemini (Google Meet)",
-    "lede": "Technical workflow + logic call. Headlines: loan paydowns apply directly to balances (no interest); an automated trust-date script will fill missing data for tranches (driven off DOMO); and client change requests get reclassified as tasks, not bugs — with urgent items prioritized regardless of label.",
+    "lede": "Technical demos + operational workflow call. Headlines: the team adopted an agent-driven model to simplify the Great Wealth Transfer process and decided to simplify the enrollment model; a driver's-license documentation bug fix is confirmed ready to deploy; and surrender workflows get improved logging + automated admin email notifications.",
     "channels": [
       {
         "label": "Inside ILIA",
         "color": "#0076BD",
         "items": [
           {
-            "text": "Loan paydown logic defined: paydowns apply directly to loan balances with no interest calculation (aligns with the short-term reconciliation approach).",
+            "text": "AI tooling for browser automation was demonstrated to the team.",
             "task": null
           },
           {
-            "text": "Add a case-details field capturing the paydown logic so estimated loan-balance formulas stay consistent (Shounak to task).",
+            "text": "Driver's-license documentation bug fix confirmed READY FOR DEPLOYMENT.",
             "task": null
           },
           {
-            "text": "Manage the bank-reconciliation field on case details and update the related estimated loan-balance formulas (Shounak).",
+            "text": "GWT invitation process moving to an agent-driven model — Jamin to build diagrams/mockups and present the updated workflow.",
             "task": null
           }
         ]
@@ -88,25 +88,33 @@
         "color": "#c47f0a",
         "items": [
           {
-            "text": "Automated script will handle missing trust-date information for the relevant tranches; identify which tranches need it by comparing missing data in DOMO, then run it.",
+            "text": "ePay: some transactions are missing tranche numbers and client names — Mohit to root-cause the data discrepancy from the provided examples.",
             "task": null
           },
           {
-            "text": "Policy notices: send for Tranches 15 & 20 after verifying the remaining policies (Mohit); scraping difficulties + notice handling procedures finalized.",
+            "text": "Agent-account migration: transfer two agents (•••) to a consolidated agent account, ensuring no data is lost (Mohit).",
+            "task": null
+          },
+          {
+            "text": "Transaction-tracking issues and system downtime were also addressed.",
             "task": null
           }
         ]
       },
       {
-        "label": "Process / task management",
+        "label": "Carriers & vendors",
         "color": "#0891b2",
         "items": [
           {
-            "text": "Client change requests will be categorized as tasks, not bugs (Olivia to reclassify) for proper PM alignment.",
+            "text": "Surrender workflow: improved logging + automated email notifications to admins when a case status flips to surrendered (Olivia to build).",
             "task": null
           },
           {
-            "text": "All urgent items require immediate prioritization regardless of labeling.",
+            "text": "Surrender-status oversight: confirm a flagged surrender case (•••) and verify its status on the surrender sheet (Judy).",
+            "task": null
+          },
+          {
+            "text": "Annual review report: check yellow highlights + provide commentary on pending orange items (Shounak).",
             "task": null
           }
         ]
@@ -116,15 +124,15 @@
         "color": "#1d6b34",
         "items": [
           {
-            "text": "Loan paydowns → applied directly to balances, no interest calc.",
+            "text": "Enrollment model → to be simplified.",
             "task": null
           },
           {
-            "text": "Client updates → tasks, not bugs; urgent items prioritized.",
+            "text": "GWT invitations → agent-driven.",
             "task": null
           },
           {
-            "text": "Trust-date gaps → filled via automated script driven off DOMO missing-data.",
+            "text": "Surrender workflow → add logging + automated admin email notifications.",
             "task": null
           }
         ]
@@ -132,6 +140,30 @@
     ]
   },
   "themes": [
+    {
+      "name": "GWT — Agent-Driven Enrollment",
+      "badge": "b-blue",
+      "latest": "Decision to simplify GWT to an agent-driven invitation flow; Jamin building diagrams/mockups.",
+      "last": "Jul 14",
+      "owner": "Jamin",
+      "dev": "to mock"
+    },
+    {
+      "name": "Surrender Workflow",
+      "badge": "b-teal",
+      "latest": "Improved logging + auto admin email notifications on status = surrendered; one flagged case to verify.",
+      "last": "Jul 14",
+      "owner": "Olivia / Judy",
+      "dev": "to build"
+    },
+    {
+      "name": "ePay Data Integrity",
+      "badge": "b-amber",
+      "latest": "Some transactions missing tranche numbers / client names — root-cause underway.",
+      "last": "Jul 14",
+      "owner": "Mohit",
+      "dev": "investigating"
+    },
     {
       "name": "Loan Reconciliation / Paydown Logic",
       "badge": "b-blue",
@@ -149,14 +181,6 @@
       "dev": "in progress"
     },
     {
-      "name": "Policy Notices",
-      "badge": "b-teal",
-      "latest": "Tranches 15 & 20 to send after verifying remaining policies.",
-      "last": "Jul 10",
-      "owner": "Mohit",
-      "dev": "pending"
-    },
-    {
       "name": "Task vs Bug Classification",
       "badge": "b-grey",
       "latest": "Client change requests reclassified bugs → tasks; urgent prioritized regardless of label.",
@@ -167,27 +191,39 @@
   ],
   "urgent": [
     {
-      "title": "Allocation mapping (National Life)",
-      "who": "urgent hotfix · Mohit",
-      "task": "NIWD-1828"
+      "title": "ePay transactions missing tranche # / client names",
+      "who": "data fix · Mohit",
+      "task": null
     },
     {
-      "title": "Enrollment rules (National Life)",
-      "who": "urgent hotfix · Mohit",
-      "task": "NIWD-1830"
+      "title": "Surrender case oversight — verify flagged case",
+      "who": "servicing · Judy",
+      "task": null
     },
     {
-      "title": "Custom illustration header spaces",
-      "who": "urgent hotfix · Mohit",
-      "task": "NIWD-1939"
+      "title": "Driver's-license documentation bug — fix ready to deploy",
+      "who": "ready · dev",
+      "task": null
     }
   ],
   "stats": {
-    "calls": 2,
-    "themes": 4,
+    "calls": 3,
+    "themes": 6,
     "urgent": 3,
     "blockers": 5,
     "pills": [
+      {
+        "t": "GWT Agent-Driven",
+        "c": "b-blue"
+      },
+      {
+        "t": "Surrender Workflow",
+        "c": "b-teal"
+      },
+      {
+        "t": "ePay Data",
+        "c": "b-amber"
+      },
       {
         "t": "Loan Recon",
         "c": "b-blue"
@@ -195,10 +231,6 @@
       {
         "t": "Trust-Date Data",
         "c": "b-amber"
-      },
-      {
-        "t": "Policy Notices",
-        "c": "b-teal"
       },
       {
         "t": "Task/Bug",
