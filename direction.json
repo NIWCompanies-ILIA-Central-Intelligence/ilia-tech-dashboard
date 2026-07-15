@@ -1,0 +1,209 @@
+{
+  "updated": "2026-07-10",
+  "sample": false,
+  "intro": "Dev-call intelligence — the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
+  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static — the on-page button reloads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
+  "goals": [
+    "Nail down loan-reconciliation logic — paydowns applied directly to balances (no interest), with consistent case-details balance formulas.",
+    "Close the trust-date data gaps — run the trust-date script against the tranches DOMO shows as missing.",
+    "Finish Master Settlor infrastructure so GWT/DBR automation can begin.",
+    "Get Tranche Management fully working & verified; keep the confirmation-statement scraper reliable.",
+    "Clear the urgent National Life hotfixes."
+  ],
+  "blockers": [
+    {
+      "title": "Loan-paydown / reconciliation logic not yet tasked",
+      "ask": "Task the case-details field + paydown logic so balance formulas are consistent (Shounak).",
+      "task": null
+    },
+    {
+      "title": "Missing trust-date data across tranches",
+      "ask": "Identify which tranches need the trust-date script (compare missing data in DOMO), then run it (group/Mohit).",
+      "task": null
+    },
+    {
+      "title": "Policy notices pending — Tranches 15 & 20",
+      "ask": "Verify remaining policies, then send notices (Mohit).",
+      "task": null
+    },
+    {
+      "title": "Master Settlor signer-role edit incomplete",
+      "ask": "Finish signer-role editing so DBR can start.",
+      "task": null
+    },
+    {
+      "title": "Confirmation statements missing — Tranche 1 & 25",
+      "ask": "Scraper under investigation (~2 weeks past anniversary).",
+      "task": null
+    }
+  ],
+  "needs_tasked": [
+    {
+      "t": "Case-details field + loan-paydown logic — document so balance formulas stay consistent",
+      "pm": "Shounak"
+    },
+    {
+      "t": "Bank reconciliation field on case details + update estimated loan-balance formulas",
+      "pm": "Shounak"
+    },
+    {
+      "t": "Run trust-date script — ID tranches needing it via DOMO missing-data compare, then execute",
+      "pm": "Mohit"
+    },
+    {
+      "t": "Send policy notices for Tranches 15 & 20 after verifying remaining policies",
+      "pm": "Mohit"
+    },
+    {
+      "t": "Reclassify client change requests from bugs → tasks (PM alignment)",
+      "pm": "Olivia"
+    }
+  ],
+  "latest_call": {
+    "title": "Dev Meeting",
+    "date": "Fri · Jul 10, 2026",
+    "source": "via Gemini (Google Meet)",
+    "lede": "Technical workflow + logic call. Headlines: loan paydowns apply directly to balances (no interest); an automated trust-date script will fill missing data for tranches (driven off DOMO); and client change requests get reclassified as tasks, not bugs — with urgent items prioritized regardless of label.",
+    "channels": [
+      {
+        "label": "Inside ILIA",
+        "color": "#0076BD",
+        "items": [
+          {
+            "text": "Loan paydown logic defined: paydowns apply directly to loan balances with no interest calculation (aligns with the short-term reconciliation approach).",
+            "task": null
+          },
+          {
+            "text": "Add a case-details field capturing the paydown logic so estimated loan-balance formulas stay consistent (Shounak to task).",
+            "task": null
+          },
+          {
+            "text": "Manage the bank-reconciliation field on case details and update the related estimated loan-balance formulas (Shounak).",
+            "task": null
+          }
+        ]
+      },
+      {
+        "label": "Data & servicing",
+        "color": "#c47f0a",
+        "items": [
+          {
+            "text": "Automated script will handle missing trust-date information for the relevant tranches; identify which tranches need it by comparing missing data in DOMO, then run it.",
+            "task": null
+          },
+          {
+            "text": "Policy notices: send for Tranches 15 & 20 after verifying the remaining policies (Mohit); scraping difficulties + notice handling procedures finalized.",
+            "task": null
+          }
+        ]
+      },
+      {
+        "label": "Process / task management",
+        "color": "#0891b2",
+        "items": [
+          {
+            "text": "Client change requests will be categorized as tasks, not bugs (Olivia to reclassify) for proper PM alignment.",
+            "task": null
+          },
+          {
+            "text": "All urgent items require immediate prioritization regardless of labeling.",
+            "task": null
+          }
+        ]
+      },
+      {
+        "label": "Decisions aligned",
+        "color": "#1d6b34",
+        "items": [
+          {
+            "text": "Loan paydowns → applied directly to balances, no interest calc.",
+            "task": null
+          },
+          {
+            "text": "Client updates → tasks, not bugs; urgent items prioritized.",
+            "task": null
+          },
+          {
+            "text": "Trust-date gaps → filled via automated script driven off DOMO missing-data.",
+            "task": null
+          }
+        ]
+      }
+    ]
+  },
+  "themes": [
+    {
+      "name": "Loan Reconciliation / Paydown Logic",
+      "badge": "b-blue",
+      "latest": "Paydowns apply directly to balances (no interest); case-details field + formulas to be tasked.",
+      "last": "Jul 10",
+      "owner": "Shounak",
+      "dev": "to task"
+    },
+    {
+      "name": "Trust-Date Data (DOMO)",
+      "badge": "b-amber",
+      "latest": "Automated script to fill missing trust dates; ID target tranches via DOMO, then run.",
+      "last": "Jul 10",
+      "owner": "Mohit / group",
+      "dev": "in progress"
+    },
+    {
+      "name": "Policy Notices",
+      "badge": "b-teal",
+      "latest": "Tranches 15 & 20 to send after verifying remaining policies.",
+      "last": "Jul 10",
+      "owner": "Mohit",
+      "dev": "pending"
+    },
+    {
+      "name": "Task vs Bug Classification",
+      "badge": "b-grey",
+      "latest": "Client change requests reclassified bugs → tasks; urgent prioritized regardless of label.",
+      "last": "Jul 10",
+      "owner": "Olivia",
+      "dev": "process"
+    }
+  ],
+  "urgent": [
+    {
+      "title": "Allocation mapping (National Life)",
+      "who": "urgent hotfix · Mohit",
+      "task": "NIWD-1828"
+    },
+    {
+      "title": "Enrollment rules (National Life)",
+      "who": "urgent hotfix · Mohit",
+      "task": "NIWD-1830"
+    },
+    {
+      "title": "Custom illustration header spaces",
+      "who": "urgent hotfix · Mohit",
+      "task": "NIWD-1939"
+    }
+  ],
+  "stats": {
+    "calls": 2,
+    "themes": 4,
+    "urgent": 3,
+    "blockers": 5,
+    "pills": [
+      {
+        "t": "Loan Recon",
+        "c": "b-blue"
+      },
+      {
+        "t": "Trust-Date Data",
+        "c": "b-amber"
+      },
+      {
+        "t": "Policy Notices",
+        "c": "b-teal"
+      },
+      {
+        "t": "Task/Bug",
+        "c": "b-grey"
+      }
+    ]
+  }
+}
