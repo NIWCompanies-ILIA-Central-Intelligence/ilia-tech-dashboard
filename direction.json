@@ -1,89 +1,98 @@
 {
-  "updated": "2026-07-15",
+  "updated": "2026-07-17",
   "sample": false,
   "intro": "Dev-call intelligence - the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
   "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static - the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
   "goals": [
-    "Guarantee agent-data capture - make the agent number a required field at registration in ILIA and back-fill existing agents by querying the database on policy number.",
-    "Close the missing-statement gaps - batch the flagged policy-years to National Life for correction and fix the confirmation-statement date logic.",
-    "Finish ePay transaction-number integrity - verify the deployed fix for new payments and resolve recurring/monthly ePay handling with the ePay team.",
-    "Unblock DBR - load master-settlor data (settlor is not the insured) and reprocess Tron 66+ so illustrated surrender values recalculate.",
-    "Smooth signing - drop internally-managed required fields from the DocuSign templates and finalize the 2nd-envelope index-allocation acknowledgement form."
+    "Decouple account, policy, and participant statuses - make enrollment statuses a subset of policy statuses and lock a definitive policy-status list (adding 'Deceased').",
+    "Finish the master-settlor data load - pull missing settlor emails where the settlor is not the insured, and overwrite trust names/EINs with verified Provident data so DBR can reprocess.",
+    "Close the illustrated-surrender-value gaps - run Tranche 67+ now and clean up the nine Tranche-66 policies still missing data.",
+    "Ship the Payments Center incrementally - land the new payment UI (annual baselines, audit history, rejection workflow) and sync its fields into Tranche Management for reporting.",
+    "Clean up policy-data hygiene - isolate ILIA policies missing a policy number and retire non-enforced older-tranche policies by treating them as prospects."
   ],
   "blockers": [
-    { "title": "Recurring/monthly ePay payments still missing transaction numbers", "ask": "Fix is live for new transactions; work out with the ePay team how scheduled/recurring payments capture transaction numbers (Judy to ePay team; Mohit verifying).", "task": "NIWD-1884" },
-    { "title": "DBR reprocessing blocked on master-settlor data load", "ask": "Prioritize the settlor-data information load so DBR can reprocess; reprocess Tron 66+ for illustrated surrender values (Mohit / Shounak).", "task": "NIWD-1771" },
-    { "title": "Scraper throughput - National Life site latency stalling jobs (24h+)", "ask": "Separate carrier-side gaps from scraper logic; compile the failing policies and test the date-logic adjustment (Shounak / Mohit).", "task": "NIWD-2019" },
-    { "title": "Linking writing agent (NPN) to an existing agent account is a significant lift", "ask": "Chris to confirm priority; decide whether to invest in linking NPN from policy feeds to agent accounts.", "task": null }
+    { "title": "DBR reprocessing waiting on the master-settlor data load", "ask": "Pull the missing master-settlor emails (settlor not the insured) and overwrite trust names/EINs from the Provident list, then reprocess (Mohit / Olivia; Jamin to grant doc access).", "task": "NIWD-1771" },
+    { "title": "Illustrated surrender values - nine Tranche-66 policies still missing data", "ask": "5 are missing policy numbers and 4 are missing a data row; proceed running Tranche 67+ while the Tranche-66 gaps are cleaned up (Mohit / Kyle).", "task": "NIWD-1753" },
+    { "title": "Missing policy numbers in ILIA break master-list comparison and prospect-tab status", "ask": "Report all policies missing a policy number and cross-reference against enrollment status; comparison logic currently excludes null values (Shounak / Chris).", "task": null },
+    { "title": "'Low Point' folder not yet in the bank folder structure", "ask": "Dev to add a 'Low Point' folder to the bank Dropbox/Egnyte structure so documents file correctly once status hits 'sent to carrier' (Judy / Olivia).", "task": "NIWD-2053" }
   ],
   "needs_tasked": [
-    { "t": "Make agent number a required field at registration in ILIA (new agents)", "pm": "Chris" },
-    { "t": "Investigate effort to extract existing agent numbers from database feeds; back-fill by querying on policy number", "pm": "Kyle / Mohit" },
-    { "t": "Confirmation-statement date-logic fix - statements landing before the crediting date or on the same date as the annual statement", "pm": "Shounak" }
+    { "t": "Lock a definitive policy-status list and add 'Deceased' as a status option", "pm": "Jamin / Judy" },
+    { "t": "Report of all ILIA policies missing a policy number, cross-referenced to enrollment status", "pm": "Shounak" },
+    { "t": "Add a 'Low Point' folder to the bank Dropbox/Egnyte folder structure", "pm": "dev" }
   ],
   "latest_call": {
     "title": "Dev Meeting",
-    "date": "Wed - Jul 15, 2026",
+    "date": "Fri - Jul 17, 2026",
     "source": "via Gemini (Google Meet)",
-    "lede": "Data-integration + servicing workflow call. Headlines: the team will make the agent number a required registration field (and back-fill existing agents from the database); missing annual/confirmation statements shift to a batch fix with National Life instead of case-by-case troubleshooting; the ePay transaction-number fix is live for new payments with recurring payments still to resolve; and DocuSign templates will drop internally-managed required fields so clients can go straight to signing.",
+    "lede": "Data-integrity + status-model call. Headlines: the team agreed to decouple account, policy, and participant statuses - enrollment statuses become a subset of policy statuses while account status is separated - and to lock a definitive policy-status list (adding 'Deceased'); master-settlor trust names and EINs will be overwritten with verified Provident data and missing settlor emails pulled so DBR can reprocess; illustrated surrender values are approved to run for Tranche 67+ while nine Tranche-66 gaps are cleaned up; and Kyle demoed the new Payments Center UI (annual baselines, rejection workflow, full audit history) that will sync into Tranche Management.",
     "channels": [
       { "label": "Inside ILIA", "color": "#0076BD", "items": [
-        { "text": "Agent number will be set to required at registration in ILIA so agent data is captured for every new agent (supports Salesforce recruitment).", "task": null },
-        { "text": "DocuSign templates: remove required financial fields that should already carry over from ILIA, so clients only need to sign.", "task": "NIWD-1881" },
-        { "text": "Back-fill existing agent numbers by querying the database on policy number, then match/update agent records (Kyle to scope the lift, Mohit to pull).", "task": null }
+        { "text": "Status decoupling: account, policy, and participant statuses are too interconnected and cause logic issues - enrollment statuses will become a subset of policy statuses while account status is decoupled; Jamin to define the solution for team review.", "task": "NIWD-1694" },
+        { "text": "Policy-status standardization: build a definitive list of policy statuses (e.g. Payment Received, Policy Issued, Policy Override) and add 'Deceased' as a new option.", "task": null },
+        { "text": "Missing policy numbers: pull a report isolating every ILIA policy missing a policy number and cross-reference against enrollment status (current master-list comparison logic excludes null values).", "task": null },
+        { "text": "Prospect/policy mismatch: policies are appearing in the Prospects tab despite having policy numbers - a participant-vs-policy status mismatch to resolve via the decoupling work.", "task": null },
+        { "text": "Payments Center: Kyle demoed the new payment UI - annual payment baselines, expectation statuses, a rejection workflow with supporting-document requests, and an audit history showing who changed what (old/new values + raw JSON).", "task": "NIWD-1606" }
       ]},
       { "label": "Carriers & vendors", "color": "#0891b2", "items": [
-        { "text": "Allianz/National Life index-allocation acknowledgement form confirmed for the second signing envelope; data labels being cleaned/mapped on staging.", "task": "NIWD-1828" },
-        { "text": "Disconnected policies on National Life's side to be reported to the carrier for correction (Judy).", "task": null },
-        { "text": "Batch list of missing annual/confirmation statements to be sent to National Life rather than troubleshooting each case manually (Shounak / Judy).", "task": null }
+        { "text": "Settlor data: trust names and EINs will be overwritten with verified data from the Provident list where existing fields are missing or incorrect.", "task": "NIWD-1679" },
+        { "text": "Carrier data verification: Judy to obtain reports from Eric on the data being sent to carriers, then compare and replicate internally to cut manual processing.", "task": null },
+        { "text": "Low Point field mapping verified - the value is sourced from the illustration data for both Allianz and National Life and confirmed in place.", "task": null }
       ]},
       { "label": "Data & servicing", "color": "#c47f0a", "items": [
-        { "text": "~933 policy-years flagged with missing annual/confirmation-statement data; separating scraper failures from carrier-side gaps.", "task": "NIWD-2019" },
-        { "text": "Confirmation-statement date-logic discrepancies (statements before the crediting date, or same date as the annual statement) - date-logic fix being tested.", "task": "NIWD-2019" },
-        { "text": "Scraper running slow (National Life site latency, some jobs 24h+); scraper logic unchanged, so gaps look carrier-side.", "task": null },
-        { "text": "ePay: servicing payments were missing transaction numbers - fix deployed for new transactions; recurring/monthly ePay handling still to resolve with the ePay team.", "task": "NIWD-1884" },
-        { "text": "DBR reprocessing: prioritize the master-settlor data load and reprocess Tron 66+ to recalculate illustrated surrender values.", "task": "NIWD-1771" }
+        { "text": "Master-settlor emails: pull the missing settlor emails for accounts where the settlor is not the insured (insured email may be reused where they are the same person); Jamin to grant Olivia access to the master-settlor document; DBR task updated to require emails.", "task": "NIWD-1771" },
+        { "text": "Illustrated surrender values: Tranche 66 pulled with 9 of 94 missing data (5 missing policy numbers, 4 missing a data row) - proceed running Tranche 67+ now while the Tranche-66 gaps are cleaned up Monday.", "task": "NIWD-1753" },
+        { "text": "Older-tranche cleanup: non-enforced policies in older tranches to be treated as prospects (or disabled if inactive over a year) so they don't linger in an incorrect state.", "task": "NIWD-1763" },
+        { "text": "Bank Dropbox/Egnyte: add a missing 'Low Point' folder to the bank folder structure; Judy to share the folder list with Olivia; documents pull once status reaches 'sent to carrier' after the admin step on staging.", "task": "NIWD-2053" },
+        { "text": "Payments + Tranche Management: map payment data fields into Tranche Management and add a link to the payments page in the deal view; release in stages (payment functionality first, then the Tranche Management field sync).", "task": "NIWD-1694" }
       ]},
       { "label": "Decisions aligned", "color": "#1d6b34", "items": [
-        { "text": "Agent number to become a required field at registration in ILIA.", "task": null },
-        { "text": "DocuSign templates to drop internally-managed required fields; clients go straight to signing.", "task": null },
-        { "text": "Allianz index-allocation acknowledgement form adopted for the second envelope.", "task": null },
-        { "text": "Missing statements to be handled by batch resolution with National Life (stop case-by-case).", "task": null },
-        { "text": "Agent data to be retrieved by querying the database on policy number; continue scraping the pending policy list.", "task": null }
+        { "text": "Enrollment statuses to become a subset of policy statuses; account status decoupled for logical separation.", "task": null },
+        { "text": "Master-settlor emails sourced from existing file data where the settlor is not the insured.", "task": null },
+        { "text": "Settlor trust names and EINs overwritten with verified Provident data.", "task": null },
+        { "text": "Illustrated surrender-value update approved to proceed for Tranche 67 and all subsequent tranches.", "task": null },
+        { "text": "Non-enforced policies in older tranches to be cleaned up by treating them as prospects.", "task": null },
+        { "text": "A 'Low Point' folder to be added to the document folder structure.", "task": null },
+        { "text": "Payment data fields to be mapped into Tranche Management, with a link to the payments page added to the interface.", "task": null }
       ]}
     ]
   },
   "themes": [
-    { "icon": "", "name": "Agent Data & Registration", "badge": "Decision", "badgeclass": "b-blue", "latest": "Agent number to become a required field at registration; existing agent numbers to be back-filled by querying the DB on policy number. NPN-to-account linking flagged as a larger lift.", "meta": ["Chris / Kyle", "Jul 15", "to build"] },
-    { "icon": "", "name": "Missing Statements & Scraper Data Gaps", "badge": "Investigating", "badgeclass": "b-amber", "latest": "~933 policy-years with missing annual/confirmation statements; shifting to a batch request to National Life. Date-logic fix being tested for statements landing before the crediting date.", "task": "NIWD-2019", "meta": ["Shounak / Mohit", "Jul 15", "investigating"] },
-    { "icon": "", "name": "DBR / Master-Settlor Data Load", "badge": "Blocker", "badgeclass": "b-purple", "latest": "Prioritizing the master-settlor data information load (settlor is not the insured) and Tron 66+ reprocess so DBR calculations and illustrated surrender values can run.", "task": "NIWD-1771", "meta": ["Mohit / Shounak", "Jul 15", "prioritized"] },
-    { "icon": "", "name": "ePay Data Integrity", "badge": "Fix live", "badgeclass": "b-amber", "latest": "Transaction-number fix deployed for new servicing payments; recurring/monthly ePay payments still need transaction numbers - to be worked out with the ePay team.", "task": "NIWD-1884", "meta": ["Mohit / Judy", "Jul 15", "verifying"] },
-    { "icon": "", "name": "DocuSign Signing Friction", "badge": "In progress", "badgeclass": "b-blue", "latest": "Templates were forcing clients to fill financial fields that should transfer from ILIA; removing the 'required' status so clients can sign directly.", "task": "NIWD-1881", "meta": ["Chris / Mohit", "Jul 15", "to fix"] },
-    { "icon": "", "name": "Allocation Forms (2nd Envelope)", "badge": "In progress", "badgeclass": "b-teal", "latest": "Index-allocation acknowledgement form adopted for the second envelope (Allianz); data labels being mapped/cleaned on staging for National Life and Allianz.", "task": "NIWD-1828", "meta": ["Chris", "Jul 15", "staging"] },
+    { "icon": "", "name": "DBR / Master-Settlor Data Load", "badge": "Blocker", "badgeclass": "b-purple", "latest": "Master-settlor emails to be pulled where the settlor is not the insured, and trust names/EINs overwritten from the verified Provident list; DBR task updated to require emails so it can reprocess. Jamin to grant Olivia doc access.", "task": "NIWD-1771", "meta": ["Mohit / Olivia", "Jul 17", "prioritized"] },
+    { "icon": "", "name": "Status Decoupling & Policy Statuses", "badge": "Decision", "badgeclass": "b-blue", "latest": "Account, policy, and participant statuses to be decoupled - enrollment statuses become a subset of policy statuses while account status is separated. Team to lock a definitive policy-status list and add 'Deceased'. Jamin defining the solution.", "task": "NIWD-1694", "meta": ["Jamin / Shounak", "Jul 17", "to define"] },
+    { "icon": "", "name": "Payments Center & Tranche Mgmt Integration", "badge": "In progress", "badgeclass": "b-teal", "latest": "New payment UI demoed - annual baselines, expectation statuses, rejection workflow with supporting-doc requests, and full audit history. To be mapped into Tranche Management (with a link to the payments page) and released in stages.", "task": "NIWD-1606", "meta": ["Kyle / Shounak", "Jul 17", "staged release"] },
+    { "icon": "", "name": "Illustrated Surrender Values (Tranche 66/67)", "badge": "In progress", "badgeclass": "b-amber", "latest": "Tranche 66 pulled with 9 of 94 missing data (5 missing policy numbers, 4 missing a data row); approved to run Tranche 67+ now while the Tranche-66 gaps are cleaned up Monday.", "task": "NIWD-1753", "meta": ["Mohit / Kyle", "Jul 17", "running"] },
+    { "icon": "", "name": "Missing Policy Numbers in ILIA", "badge": "Investigating", "badgeclass": "b-amber", "latest": "Report to isolate every ILIA policy missing a policy number, cross-referenced to enrollment status; comparison logic currently excludes null values, and some show wrongly in the Prospects tab. Domo filtering being worked out.", "task": null, "meta": ["Shounak / Chris", "Jul 17", "investigating"] },
+    { "icon": "", "name": "Bank Dropbox / 'Low Point' Folder", "badge": "In progress", "badgeclass": "b-teal", "latest": "A 'Low Point' folder to be added to the bank Dropbox/Egnyte structure (alongside EIN, ARC, Disclosure, Copy of Contribution); documents pull once status hits 'sent to carrier'. Judy to share the folder list with Olivia.", "task": "NIWD-2053", "meta": ["Judy / Olivia", "Jul 17", "to build"] },
+    { "icon": "", "name": "Missing Statements & Scraper Data Gaps", "badge": "Investigating", "badgeclass": "b-amber", "latest": "~933 policy-years with missing annual/confirmation statements; shifting to a batch request to National Life. Date-logic fix being tested for statements landing before the crediting date. No update this call.", "task": "NIWD-2019", "meta": ["Shounak / Mohit", "Jul 15", "investigating"] },
+    { "icon": "", "name": "ePay Data Integrity", "badge": "Fix live", "badgeclass": "b-amber", "latest": "Transaction-number fix deployed for new servicing payments; recurring/monthly ePay payments still need transaction numbers - to be worked out with the ePay team. No update this call.", "task": "NIWD-1884", "meta": ["Mohit / Judy", "Jul 15", "verifying"] },
+    { "icon": "", "name": "DocuSign Signing Friction", "badge": "In progress", "badgeclass": "b-blue", "latest": "Templates were forcing clients to fill financial fields that should transfer from ILIA; removing the 'required' status so clients can sign directly. No update this call.", "task": "NIWD-1881", "meta": ["Chris / Mohit", "Jul 15", "to fix"] },
+    { "icon": "", "name": "Allocation Forms (2nd Envelope)", "badge": "In progress", "badgeclass": "b-teal", "latest": "Index-allocation acknowledgement form adopted for the second envelope (Allianz); data labels being mapped/cleaned on staging for National Life and Allianz. No update this call.", "task": "NIWD-1828", "meta": ["Chris", "Jul 15", "staging"] },
+    { "icon": "", "name": "Agent Data & Registration", "badge": "Carried", "badgeclass": "b-grey", "latest": "Agent number to become a required field at registration; existing agent numbers to be back-filled by querying the DB on policy number. NPN-to-account linking flagged as a larger lift. No update this call.", "meta": ["Chris / Kyle", "Jul 15", "to build"] },
     { "icon": "", "name": "GWT - Agent-Driven Enrollment", "badge": "Carried", "badgeclass": "b-grey", "latest": "Decision to simplify GWT to an agent-driven invitation flow; Jamin building diagrams/mockups. No update this call.", "meta": ["Jamin", "Jul 14", "to mock"] },
     { "icon": "", "name": "Surrender Workflow", "badge": "Carried", "badgeclass": "b-grey", "latest": "Improved logging + auto admin email notifications on status = surrendered. No update this call.", "meta": ["Olivia / Judy", "Jul 14", "to build"] }
   ],
   "urgent": [
-    { "title": "Recurring/monthly ePay payments missing transaction numbers", "who": "servicing - Mohit / Judy", "task": "NIWD-1884" },
-    { "title": "~933 policy-years missing statements - batch to National Life", "who": "data - Shounak", "task": "NIWD-2019" },
-    { "title": "DBR reprocess blocked on master-settlor data load", "who": "dev - Mohit / Shounak", "task": "NIWD-1771" }
+    { "title": "DBR reprocess blocked on master-settlor data load (emails + Provident trust/EIN overwrite)", "who": "dev - Mohit / Shounak", "task": "NIWD-1771" },
+    { "title": "Illustrated surrender values - run Tranche 67+, clean up 9 Tranche-66 gaps", "who": "data - Mohit / Kyle", "task": "NIWD-1753" },
+    { "title": "Status decoupling - enrollment statuses to become a subset of policy statuses", "who": "product - Jamin", "task": "NIWD-1694" }
   ],
   "dev_tagged": [
-    { "task": "NIWD-2019", "text": "Annual review / scraper data gaps - compile failing policies + test confirmation-statement date-logic fix." },
-    { "task": "NIWD-1771", "text": "Master-settlor data load (settlor is not the insured) - DBR blocker; then reprocess Tron 66+." },
-    { "task": "NIWD-1884", "text": "ePay receipt transaction-number fix - verify new payments; extend to recurring/monthly." },
-    { "task": "NIWD-1828", "text": "Mapping allocations for National Life - clean data labels on the 2nd-envelope crediting form." },
-    { "task": "NIWD-1881", "text": "Pre-fill DocuSign with ILIA data - drop internally-managed required fields." }
+    { "task": "NIWD-1771", "text": "Master-settlor data load (settlor is not the insured) - pull missing emails, overwrite trust names/EINs from Provident; DBR blocker." },
+    { "task": "NIWD-1753", "text": "Reprocess Tranche 66+ for missing illustrated surrender values - run 67+ now, clean up the 9 Tranche-66 gaps." },
+    { "task": "NIWD-1694", "text": "Replace participant status with policy status in Tranche Management / Prospects - support the enrollment-as-subset decoupling." },
+    { "task": "NIWD-1606", "text": "Payments Center - preserve audit trail and record integrity; back the new payment UI and Tranche Management field sync." },
+    { "task": "NIWD-2053", "text": "Add a 'Low Point' folder to the bank Dropbox/Egnyte structure; pull documents once status hits 'sent to carrier'." }
   ],
   "stats": {
-    "calls": 4, "themes": 8, "urgent": 3, "dev": 5, "blockers": 4,
+    "calls": 5, "themes": 13, "urgent": 3, "dev": 5, "blockers": 4,
     "pills": [
-      { "t": "Agent Data", "c": "b-blue" },
-      { "t": "Missing Statements", "c": "b-amber" },
-      { "t": "DBR / Settlor Load", "c": "b-purple" },
-      { "t": "ePay Data", "c": "b-amber" },
-      { "t": "DocuSign", "c": "b-blue" },
-      { "t": "Allocation Forms", "c": "b-teal" }
+      { "t": "Status Decoupling", "c": "b-blue" },
+      { "t": "Master-Settlor Load", "c": "b-purple" },
+      { "t": "Payments Center", "c": "b-teal" },
+      { "t": "Surrender Values", "c": "b-amber" },
+      { "t": "Missing Policy #s", "c": "b-amber" },
+      { "t": "Low Point Folder", "c": "b-teal" }
     ]
   }
 }
