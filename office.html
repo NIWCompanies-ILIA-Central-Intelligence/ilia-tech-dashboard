@@ -211,7 +211,7 @@ function drawChar(ch){const step=Math.sin(ch.t*10)*(ch.moving?1:0),x=Math.round(
  if(ch.vest){g.fillStyle="#eef2f7";g.fillRect(x-7,y-20,14,3);g.beginPath();g.moveTo(x-4,y-20);g.lineTo(x,y-13);g.lineTo(x+4,y-20);g.closePath();g.fill();g.strokeStyle="#c9d3dd";g.lineWidth=1;g.beginPath();g.moveTo(x-4,y-19);g.lineTo(x,y-13);g.lineTo(x+4,y-19);g.stroke();}
  if(ch.role==="ceo"){g.fillStyle="#fff";g.fillRect(x-2,y-20,4,12);g.fillStyle="#C79A3B";g.fillRect(x-1,y-19,2,7);}
  g.fillStyle=ch.vest?"#eef2f7":ch.shirt;g.fillRect(x-9,y-19,3,8);g.fillRect(x+6,y-19,3,8);
- if(ch.rfid){var _on=ch.alarm?(Math.sin(ch.t*14)>0):true;if(ch.alarm&&_on){g.fillStyle="rgba(255,40,40,.35)";g.fillRect(x+1,y-18,5,5);}g.fillStyle=ch.alarm?(_on?"#ff2020":"#5a0000"):"#b30000";g.fillRect(x+2,y-17,3,3);}
+ if(ch.rfid){var _px=x+3,_py=y-15;if(ch.alarm){var _ph=(Math.sin(ch.t*16)+1)/2,_rad=8+_ph*9;var _gg=g.createRadialGradient(_px,_py,0,_px,_py,_rad);_gg.addColorStop(0,"rgba(255,70,70,"+(0.55+0.35*_ph)+")");_gg.addColorStop(0.45,"rgba(255,25,25,"+(0.30*_ph+0.10)+")");_gg.addColorStop(1,"rgba(255,0,0,0)");g.fillStyle=_gg;g.beginPath();g.arc(_px,_py,_rad,0,7);g.fill();g.fillStyle=_ph>0.5?"#ffdede":"#ff2323";g.fillRect(_px-1,_py-1,3,3);if(_ph>0.7){g.fillStyle="#fff";g.fillRect(_px,_py,1,1);}}else{g.fillStyle="#b30000";g.fillRect(_px-1,_py-1,2,2);}}
  g.fillStyle=ch.skin;g.fillRect(x-9,y-12,3,3);g.fillRect(x+6,y-12,3,3);
  g.fillStyle=ch.skin;g.fillRect(x-6,y-31,12,12);
  if(!ch.bald){g.fillStyle=ch.hair;g.fillRect(x-7,y-33,14,5);g.fillRect(x-7,y-31,3,6);g.fillRect(x+4,y-31,3,6);}
