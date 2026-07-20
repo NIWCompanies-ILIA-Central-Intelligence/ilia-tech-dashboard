@@ -134,7 +134,7 @@ const chars=[
  C({name:"PM",role:"agent",home:"PM Portal",skin:"#5b7085",hair:"#3d4c59",shirt:"#5b7085",pants:"#0d1f2d",bot:true,say:["standup in 5!","Jira good","triaging…"]}),
  C({name:"Judy",role:"roam",skin:"#f6cfa6",hair:"#caa04a",shirt:"#0076BD",pants:"#33414d",say:["Looks great!","approved ✅","nice work team"]}),
  C({name:"Jamin",role:"roam",bald:true,skin:"#f2c39a",hair:"#e8c451",glasses:true,shirt:"#2b3a67",pants:"#33414d",say:["on it.","ship it 🚀","let's go"]}),
- C({name:"Kyle",role:"roam",skin:"#f0c39a",hair:"#7a4a24",shirt:"#e07b1a",pants:"#33414d",say:["testing…","seeder ✅","🎧"]}),
+ C({name:"Kyle",role:"roam",vest:true,rfid:true,skin:"#f0c39a",hair:"#7a4a24",shirt:"#e07b1a",pants:"#33414d",say:["testing…","seeder ✅","🎧"]}),
  C({name:"Olivia",role:"roam",skin:"#f7cbb0",hair:"#8a5a3a",shirt:"#12a6c4",pants:"#33414d",say:["call notes 📝","synced ✅","👍"]}),
  C({name:"Shounak",role:"roam",skin:"#d9a273",hair:"#241a12",beard:true,shirt:"#3b4a63",pants:"#33414d",say:["11 not 12","scraper fix","LGTM 👍"]}),
  C({name:"Brad",role:"roam",skin:"#f0c8a4",hair:"#5a3b22",shirt:"#7a1e2b",pants:"#33414d",say:["prompt→PR","staging ✅","brb"]}),
@@ -211,6 +211,7 @@ function drawChar(ch){const step=Math.sin(ch.t*10)*(ch.moving?1:0),x=Math.round(
  if(ch.vest){g.fillStyle="#eef2f7";g.fillRect(x-7,y-20,14,3);g.beginPath();g.moveTo(x-4,y-20);g.lineTo(x,y-13);g.lineTo(x+4,y-20);g.closePath();g.fill();g.strokeStyle="#c9d3dd";g.lineWidth=1;g.beginPath();g.moveTo(x-4,y-19);g.lineTo(x,y-13);g.lineTo(x+4,y-19);g.stroke();}
  if(ch.role==="ceo"){g.fillStyle="#fff";g.fillRect(x-2,y-20,4,12);g.fillStyle="#C79A3B";g.fillRect(x-1,y-19,2,7);}
  g.fillStyle=ch.vest?"#eef2f7":ch.shirt;g.fillRect(x-9,y-19,3,8);g.fillRect(x+6,y-19,3,8);
+ if(ch.rfid){var _on=ch.alarm?(Math.sin(ch.t*14)>0):true;if(ch.alarm&&_on){g.fillStyle="rgba(255,40,40,.35)";g.fillRect(x+1,y-18,5,5);}g.fillStyle=ch.alarm?(_on?"#ff2020":"#5a0000"):"#b30000";g.fillRect(x+2,y-17,3,3);}
  g.fillStyle=ch.skin;g.fillRect(x-9,y-12,3,3);g.fillRect(x+6,y-12,3,3);
  g.fillStyle=ch.skin;g.fillRect(x-6,y-31,12,12);
  if(!ch.bald){g.fillStyle=ch.hair;g.fillRect(x-7,y-33,14,5);g.fillRect(x-7,y-31,3,6);g.fillRect(x+4,y-31,3,6);}
@@ -296,6 +297,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
    if(d<2){ch.path.shift();if(ch.path.length===0&&ch.role==="roam"){ch.wait=0;}}
    else{ch.moving=true;const sp=Math.min(d,(ch.role==="roam"?62:34)*(ch.name==="Judy"?2.5:1)*dt);ch.x+=dx/d*sp;ch.y+=dy/d*sp;if(Math.abs(dx)>.4)ch.dir=dx>0?1:-1;}}
   ch.cd-=dt;if(ch.cd<=0&&!ch.reporting){ch.cd=6+R()*10;ch.bub=ch.say[ri(ch.say.length)];ch.bubT=2.8;}if(ch.bubT>0)ch.bubT-=dt;
+  if(ch.rfid){ch.alarm=false;for(const r of rooms){if((r.s==="Simsaw"||r.s==="ILIA Code Repo"||r.s==="CEO · CIH Master")&&ch.x>=r.x&&ch.x<=r.x+r.w&&ch.y>=r.y&&ch.y<=r.y+r.h){ch.alarm=true;break;}}}
  }
  // render
  g.fillStyle="#aeb7c0";g.fillRect(0,0,W,H);
