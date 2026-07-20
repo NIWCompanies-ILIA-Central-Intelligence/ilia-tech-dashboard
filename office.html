@@ -297,7 +297,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
    if(d<2){ch.path.shift();if(ch.path.length===0&&ch.role==="roam"){ch.wait=0;}}
    else{ch.moving=true;const sp=Math.min(d,(ch.role==="roam"?62:34)*(ch.name==="Judy"?2.5:1)*dt);ch.x+=dx/d*sp;ch.y+=dy/d*sp;if(Math.abs(dx)>.4)ch.dir=dx>0?1:-1;}}
   ch.cd-=dt;if(ch.cd<=0&&!ch.reporting){ch.cd=6+R()*10;ch.bub=ch.say[ri(ch.say.length)];ch.bubT=2.8;}if(ch.bubT>0)ch.bubT-=dt;
-  if(ch.rfid){ch.alarm=false;for(const r of rooms){if((r.s==="Simsaw"||r.s==="ILIA Code Repo"||r.s==="CEO · CIH Master")&&ch.x>=r.x&&ch.x<=r.x+r.w&&ch.y>=r.y&&ch.y<=r.y+r.h){ch.alarm=true;break;}}}
+  if(ch.rfid){var _rm=null;for(const r of rooms){if(ch.x>=r.x&&ch.x<=r.x+r.w&&ch.y>=r.y&&ch.y<=r.y+r.h){_rm=r.s;break;}}if(ch._prevRoom===undefined)ch._prevRoom=_rm;if(ch._prevRoom&&_rm!==ch._prevRoom)ch.alarmT=6;ch._prevRoom=_rm;ch.alarmT=Math.max(0,(ch.alarmT||0)-dt);ch.alarm=ch.alarmT>0;}
  }
  // render
  g.fillStyle="#aeb7c0";g.fillRect(0,0,W,H);
