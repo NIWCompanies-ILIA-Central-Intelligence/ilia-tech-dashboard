@@ -133,11 +133,11 @@ const chars=[
  C({name:"Dash",role:"agent",home:"Tech Dashboard",skin:"#c47f0a",hair:"#8a5906",shirt:"#c47f0a",pants:"#0d1f2d",bot:true,say:["deploy green ✅","masking PII…","tabs live"]}),
  C({name:"PM",role:"agent",home:"PM Portal",skin:"#5b7085",hair:"#3d4c59",shirt:"#5b7085",pants:"#0d1f2d",bot:true,say:["standup in 5!","Jira good","triaging…"]}),
  C({name:"Judy",role:"roam",skin:"#f6cfa6",hair:"#caa04a",shirt:"#0076BD",pants:"#33414d",say:["Looks great!","approved ✅","nice work team"]}),
- C({name:"Jamin",role:"roam",bald:true,skin:"#f2c39a",hair:"#e8c451",glasses:true,shirt:"#2b3a67",pants:"#33414d",say:["on it.","ship it 🚀","let's go"]}),
+ C({name:"Jamin",role:"roam",bald:true,pets:2,petCols:["#caa04a","#5a4632"],skin:"#f2c39a",hair:"#e8c451",glasses:true,shirt:"#2b3a67",pants:"#33414d",say:["on it.","ship it 🚀","let's go"]}),
  C({name:"Kyle",role:"roam",vest:true,rfid:true,skin:"#f0c39a",hair:"#7a4a24",shirt:"#e07b1a",pants:"#33414d",say:["testing…","seeder ✅","🎧"]}),
  C({name:"Olivia",role:"roam",skin:"#f7cbb0",hair:"#8a5a3a",shirt:"#12a6c4",pants:"#33414d",say:["call notes 📝","synced ✅","👍"]}),
  C({name:"Shounak",role:"roam",skin:"#d9a273",hair:"#241a12",beard:true,shirt:"#3b4a63",pants:"#33414d",say:["11 not 12","scraper fix","LGTM 👍"]}),
- C({name:"Brad",role:"roam",skin:"#f0c8a4",hair:"#5a3b22",shirt:"#7a1e2b",pants:"#33414d",say:["prompt→PR","staging ✅","brb"]}),
+ C({name:"Brad",role:"roam",pets:3,petCols:["#e0842a","#9aa0a6","#2b2b2b"],skin:"#f0c8a4",hair:"#5a3b22",shirt:"#7a1e2b",pants:"#33414d",say:["prompt→PR","staging ✅","brb"]}),
  C({name:"Manish",role:"roam",vest:true,skin:"#c98d5a",hair:"#1c140e",shirt:"#243b63",pants:"#222",say:["aligned ✅","Simplicity!","numbers 👍"]}),
  C({name:"Amir",role:"roam",vest:true,skin:"#b87a45",hair:"#20160f",shirt:"#243b63",pants:"#222",say:["on track","reviewing…","great work"]}),
  C({name:"Sanjay",role:"roam",vest:true,skin:"#c98a55",hair:"#181109",shirt:"#243b63",pants:"#222",say:["DOMO access?","read-only 🔒","👍"]}),
@@ -204,7 +204,9 @@ function bubble(ch){if(ch.bubT<=0)return;g.font="bold 12px 'Segoe UI',Arial";
  g.fillStyle=_tc;g.textBaseline="top";g.textAlign="center";
  for(var i=0;i<lines.length;i++)g.fillText(lines[i],ch.x,y+4+i*lh);
  g.textAlign="left";g.globalAlpha=1;}
+function drawCat(cx,cy,dir,col,t){cx=Math.round(cx);cy=Math.round(cy);var f=dir>=0?1:-1;g.fillStyle="rgba(0,0,0,.18)";g.beginPath();g.ellipse(cx,cy+1,5,2,0,0,7);g.fill();g.fillStyle=col;g.fillRect(cx-4,cy-4,8,4);var hx=cx+(f>0?3:-6);g.fillRect(hx,cy-6,3,3);g.fillRect(hx,cy-8,1,2);g.fillRect(hx+2,cy-8,1,2);var sw=Math.round(Math.sin(t*6)*2);g.fillRect(cx+(f>0?-5:4),cy-6+sw,1,4);g.fillRect(cx-3,cy-1,1,2);g.fillRect(cx+2,cy-1,1,2);g.fillStyle="#111";g.fillRect(hx+(f>0?2:0),cy-5,1,1);}
 function drawChar(ch){const step=Math.sin(ch.t*10)*(ch.moving?1:0),x=Math.round(ch.x),y=Math.round(ch.y),f=ch.dir;
+ if(ch.pets){var _pc=ch.petCols||["#e0842a","#9aa0a6","#2b2b2b"];var _tr=ch.trail||[];for(var _p=0;_p<ch.pets;_p++){var _i=_tr.length-1-(_p+1)*11;if(_i>=0){var _pt=_tr[_i];drawCat(_pt.x+((_p&1)?5:-5),_pt.y,ch.dir,_pc[_p%_pc.length],ch.t+_p);}}}
  g.fillStyle="rgba(0,0,0,.20)";g.beginPath();g.ellipse(x,y+2,10,4,0,0,7);g.fill();
  g.fillStyle=ch.pants;g.fillRect(x-6,y-9+(step>0?0:1),4,9);g.fillRect(x+2,y-9+(step>0?1:0),4,9);
  g.fillStyle=ch.shirt;g.fillRect(x-7,y-20,14,12);
@@ -298,6 +300,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
    else{ch.moving=true;const sp=Math.min(d,(ch.role==="roam"?62:34)*(ch.name==="Judy"?2.5:1)*dt);ch.x+=dx/d*sp;ch.y+=dy/d*sp;if(Math.abs(dx)>.4)ch.dir=dx>0?1:-1;}}
   ch.cd-=dt;if(ch.cd<=0&&!ch.reporting){ch.cd=6+R()*10;ch.bub=ch.say[ri(ch.say.length)];ch.bubT=2.8;}if(ch.bubT>0)ch.bubT-=dt;
   if(ch.rfid){var _rm=null;for(const r of rooms){if(ch.x>=r.x&&ch.x<=r.x+r.w&&ch.y>=r.y&&ch.y<=r.y+r.h){_rm=r.s;break;}}if(ch._prevRoom===undefined)ch._prevRoom=_rm;if(ch._prevRoom&&_rm!==ch._prevRoom)ch.alarmT=6;ch._prevRoom=_rm;ch.alarmT=Math.max(0,(ch.alarmT||0)-dt);ch.alarm=ch.alarmT>0;}
+  if(ch.pets){(ch.trail||(ch.trail=[])).push({x:ch.x,y:ch.y});if(ch.trail.length>240)ch.trail.shift();}
  }
  // render
  g.fillStyle="#aeb7c0";g.fillRect(0,0,W,H);
