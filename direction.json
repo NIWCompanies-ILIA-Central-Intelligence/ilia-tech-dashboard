@@ -1,113 +1,682 @@
 {
-  "updated": "2026-07-22",
-  "sample": false,
-  "intro": "Dev-call intelligence - the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
-  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static - the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
-  "goals": [
-    "Lock the ILIA status model - split statuses into account, enrollment, and policy groups, map carrier-provided statuses (Allianz 14, National Life 8) one-to-one into those buckets, and keep underwriting/requirements under enrollment.",
-    "Finish the master-settlor data load - pull missing settlor emails where the settlor is not the insured, and overwrite trust names/EINs with verified Provident data so DBR can reprocess.",
-    "Close the illustrated-surrender-value gaps - run Tranche 67+ now and clean up the nine Tranche-66 policies still missing data.",
-    "Ship the Payments Center incrementally - land the new payment UI (annual baselines, audit history, rejection workflow) and sync its fields into Tranche Management and ePay for reporting.",
-    "Fix tranche mechanics - loosen ePay tranche-number locking so not-yet-in-force policies stay editable, restrict bulk moves to a single owner, and add a system Close-Tranche function that auto-advances prospects."
-  ],
-  "blockers": [
-    { "title": "Carrier systematic-allocation-change form has a hard Sept 26 deadline", "ask": "Decide between the two handling options (stop new + terminate existing on the next monthly transfer vs. stop new + run existing to depletion) and complete client/agent outreach to move off monthly crediting before the form takes effect.", "task": null },
-    { "title": "No agreed protocol for agents who move to competitors while keeping client business", "ask": "Management to formalize the offboarding protocol - the departing-agent case this call was handled ad hoc (access disabled, clients retained servicing, activity compiled for a possible non-compete). Codify the standard.", "task": null },
-    { "title": "Irrevocable-trust handling needs a definitive spec before configuration", "ask": "Confirm the full requirements and DocuSign needs for revocable-to-irrevocable trust conversions, then implement a status/flag (not a new tranche) plus a Domo report formula to segregate affected clients for the bank.", "task": null },
-    { "title": "DBR reprocessing still waiting on the master-settlor data load", "ask": "Pull the missing master-settlor emails (settlor not the insured) and overwrite trust names/EINs from the Provident list, then reprocess (Mohit / Olivia). No update this call.", "task": "NIWD-1771" }
-  ],
-  "needs_tasked": [
-    { "t": "Irrevocable-trust identifier - add a status/flag field to ILIA and a Domo report formula to segregate revocable-to-irrevocable conversions (keep original tranche, no DB rebuild)", "pm": "Chris / Shounak" },
-    { "t": "Automated Close-Tranche function - closing a tranche auto-advances remaining prospects to the next tranche, replacing manual bulk transfers", "pm": "Chris / Judy" },
-    { "t": "Restrict bulk tranche moves to a single designated owner to prevent premature/unauthorized transfers", "pm": "Judy" },
-    { "t": "Carrier systematic-allocation-change form - pick a handling option and build the client/agent outreach", "pm": "Judy / Shounak" }
-  ],
-  "latest_call": {
-    "title": "Dev Meeting",
-    "date": "Wed - Jul 22, 2026",
-    "source": "via Gemini (Google Meet)",
-    "lede": "Servicing + platform call. Headlines: a departing agent's ILIA access is being disabled while their clients keep servicing access, with downloaded-document activity compiled for a possible non-compete review; the status-standardization project aligned on using carrier-provided statuses (Allianz's 14, National Life's 8) mapped one-to-one into three buckets - account, enrollment, and policy - with underwriting/requirements living under enrollment (NIWD-2070); National Life DocuSign completion certificates will mirror the Allianz auto-save process going forward (NIWD-2069); revocable-to-irrevocable trust conversions will be handled with a status flag / 'Tranche B' identifier rather than a new tranche or database rebuild; and ePay tranche-number locking that blocks edits on not-yet-in-force policies will be loosened (NIWD-2075), with bulk tranche moves restricted to one owner and a new system Close-Tranche function that auto-advances remaining prospects.",
-    "channels": [
-      { "label": "Inside ILIA", "color": "#0076BD", "items": [
-        { "text": "Status standardization: split ILIA statuses into three groups - account status (invited, opened email, created, disabled), enrollment status (product-enrollment steps, including underwriting and requirements), and policy status (high-level events like issued, surrendered, inactive).", "task": "NIWD-2070" },
-        { "text": "Carrier-mapped policy statuses: adopt carrier-provided statuses one-to-one (Allianz 14, National Life 8) rather than a custom internal bucket, so agents keep familiar terminology; Jamin to update the planning doc with a visual breakdown of all status types to roll up into consolidated categories.", "task": "NIWD-2070" },
-        { "text": "Admin status buckets: 'medically declined', 'client declined', and 'inactive' were added to the 'did not issue' bucket and treated as administrative prospect actions.", "task": "NIWD-2072" },
-        { "text": "Irrevocable-trust identifier: add a status/flag to identify revocable-to-irrevocable trust conversions instead of building a new tranche; keep affected clients in their original tranche via a 'Tranche B' filter so funding dates and payment timelines stay synced.", "task": null },
-        { "text": "Client document visibility: a client's personal-information-change documents were not showing; confirmed visible after a refresh during a screen-share, so no code change needed.", "task": "NIWD-2074" }
-      ]},
-      { "label": "Carriers & vendors", "color": "#0891b2", "items": [
-        { "text": "National Life DocuSign certificates: completion certificates are not being captured/named for National Life the way they are for Allianz (they save to the storage bucket but stay unnamed); future National Life applications will mirror the Allianz auto-save process. No retroactive backfill of historical records needed.", "task": "NIWD-2069" }
-      ]},
-      { "label": "Data & servicing", "color": "#c47f0a", "items": [
-        { "text": "ePay tranche-number lock: policies are being locked when moved from one tranche to the next as an ePay payment posts near the deadline, which blocks edits; the lock is intended behavior once a payment is marked received, but it will be loosened so not-yet-in-force policies stay editable.", "task": "NIWD-2075" },
-        { "text": "Tranche move controls: restrict bulk tranche moves to a single designated owner to prevent premature or unauthorized transfers; the three accounts locked in error have already been fixed.", "task": null },
-        { "text": "Automated tranche closing: build a system Close-Tranche function that automatically advances remaining prospects to the next tranche, replacing manual bulk transfers; verify all in-force policies are correctly identified before closing historical tranches.", "task": null },
-        { "text": "Irrevocable-trust reporting: flag clients converting to irrevocable status (e.g., moving out of Tranche 75) and segregate them via a Domo report formula rather than rebuilding database architecture; DocuSign handled as one-offs by Chris after the requirements are confirmed.", "task": null }
-      ]},
-      { "label": "Decisions aligned", "color": "#1d6b34", "items": [
-        { "text": "Status standardization uses carrier-provided statuses inside ILIA rather than a custom internal bucket system.", "task": null },
-        { "text": "Underwriting/requirements statuses live under enrollment; policy statuses stay reserved for high-level events (issued, surrendered, inactive).", "task": null },
-        { "text": "Future National Life applications mirror the Allianz certificate auto-save process; no retroactive update of historical records.", "task": null },
-        { "text": "Revocable-to-irrevocable trust conversions handled via a status field / 'Tranche B' identifier that keeps the original tranche - no new tranche and no database rebuild.", "task": null },
-        { "text": "A system-based Close-Tranche function replaces manual bulk transfers, and bulk moves are restricted to one designated owner.", "task": null },
-        { "text": "A departing agent's account access is disabled while their clients retain servicing access; document-download activity is compiled for potential non-compete enforcement.", "task": null }
-      ]}
-    ]
+ "updated": "2026-07-22",
+ "sample": false,
+ "intro": "Dev-call intelligence - the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
+ "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static - the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
+ "goals": [
+  "Lock the ILIA status model - split statuses into account, enrollment, and policy groups, map carrier-provided statuses (Allianz 14, National Life 8) one-to-one into those buckets, and keep underwriting/requirements under enrollment.",
+  "Finish the master-settlor data load - pull missing settlor emails where the settlor is not the insured, and overwrite trust names/EINs with verified Provident data so DBR can reprocess.",
+  "Close the illustrated-surrender-value gaps - run Tranche 67+ now and clean up the nine Tranche-66 policies still missing data.",
+  "Ship the Payments Center incrementally - land the new payment UI (annual baselines, audit history, rejection workflow) and sync its fields into Tranche Management and ePay for reporting.",
+  "Fix tranche mechanics - loosen ePay tranche-number locking so not-yet-in-force policies stay editable, restrict bulk moves to a single owner, and add a system Close-Tranche function that auto-advances prospects."
+ ],
+ "blockers": [
+  {
+   "title": "Carrier systematic-allocation-change form has a hard Sept 26 deadline",
+   "ask": "Decide between the two handling options (stop new + terminate existing on the next monthly transfer vs. stop new + run existing to depletion) and complete client/agent outreach to move off monthly crediting before the form takes effect.",
+   "task": null
   },
-  "themes": [
-    { "icon": "", "name": "Status Standardization (Account / Enrollment / Policy)", "badge": "Decision", "badgeclass": "b-blue", "latest": "Aligned on splitting ILIA statuses into account, enrollment, and policy groups and mapping carrier-provided statuses one-to-one (Allianz 14, National Life 8) rather than a custom internal bucket. Underwriting/requirements sit under enrollment; policy status stays high-level (issued/surrendered/inactive). Jamin to add a visual breakdown of all status types to the planning doc.", "task": "NIWD-2070", "meta": ["Jamin / Kyle / Shounak", "Jul 22", "aligned"] },
-    { "icon": "", "name": "Agent Offboarding & Access Review", "badge": "Urgent", "badgeclass": "b-purple", "latest": "A departing agent (now with a competitor) is having ILIA account access disabled while their clients keep servicing access; the agent is directed to contact servicing for information. Downloaded-document activity was tracked via FullStory (screenshots can't be confirmed) and compiled for legal to weigh non-compete enforcement. Broader offboarding protocol still to be formalized with management.", "task": null, "meta": ["Judy / Olivia", "Jul 22", "in review"] },
-    { "icon": "", "name": "National Life DocuSign Certificates", "badge": "Decision", "badgeclass": "b-blue", "latest": "Completion certificates aren't captured/named for National Life the way they are for Allianz (they save to the storage bucket but stay unnamed). Future National Life applications will mirror the Allianz auto-save process; no retroactive backfill needed.", "task": "NIWD-2069", "meta": ["Olivia / Mohit", "Jul 22", "aligned"] },
-    { "icon": "", "name": "Irrevocable Trust 'Tranche B' Handling", "badge": "Needs input", "badgeclass": "b-amber", "latest": "Revocable-to-irrevocable trust conversions will be identified with a status/flag and a 'Tranche B' filter that keeps clients in their original tranche (funding dates and payment timelines stay synced), plus a Domo report formula to segregate them for the bank - avoiding a new tranche or DB rebuild. Requirements and DocuSign needs to be confirmed before configuration.", "task": null, "meta": ["Judy / Chris / Shounak", "Jul 22", "defining"] },
-    { "icon": "", "name": "ePay Tranche Lock / Not-In-Force Editing", "badge": "Fixing", "badgeclass": "b-teal", "latest": "Policies get locked when moved to the next tranche as an ePay payment posts near the deadline, blocking edits. The lock triggers when payment is marked received (intended behavior), but it will be loosened so policies that aren't yet in force stay editable.", "task": "NIWD-2075", "meta": ["Kyle / Mohit", "Jul 22", "to build"] },
-    { "icon": "", "name": "Automated Tranche Closing", "badge": "In progress", "badgeclass": "b-teal", "latest": "Build a system Close-Tranche function that auto-advances remaining prospects to the next tranche, replacing manual bulk transfers and reducing errors. Bulk moves to be restricted to one designated owner; historical tranches to be closed once all in-force policies are verified.", "task": null, "meta": ["Chris / Judy", "Jul 22", "to build"] },
-    { "icon": "", "name": "Great Wealth Transfer Review", "badge": "In progress", "badgeclass": "b-grey", "latest": "Judy and Jamin to review the Great Wealth Transfer process together before presenting it to leadership; review scheduled immediately after this call.", "task": "NIWD-1889", "meta": ["Jamin / Judy", "Jul 22", "reviewing"] },
-    { "icon": "", "name": "Systematic Allocation Change Form (Sept 26)", "badge": "In progress", "badgeclass": "b-teal", "latest": "New carrier allocation-change form due Sept 26. Two options being weighed (stop new + terminate existing on next monthly transfer vs. stop new + run existing to depletion). Client/agent outreach planned to move off monthly crediting. No update this call.", "task": null, "meta": ["Judy / Shounak", "Jul 20", "needs task"] },
-    { "icon": "", "name": "Allocation Combination Bug", "badge": "Fixing", "badgeclass": "b-amber", "latest": "A specific allocation combination is failing; traced to outdated rates in staging. Kyle to update staging rates, retest the sample payload, and comment on the task. No update this call.", "task": "NIWD-904", "meta": ["Kyle / Mohit", "Jul 20", "retesting"] },
-    { "icon": "", "name": "Kaizen Custom Design Wizard", "badge": "In progress", "badgeclass": "b-teal", "latest": "Wizard UI to drop the contribution-vs-death-benefit page in favor of a direct death-benefit entry field; confirmed ready for implementation. No update this call.", "task": "NIWD-1999", "meta": ["Kyle", "Jul 20", "ready"] },
-    { "icon": "", "name": "Employer Contribution UI", "badge": "In progress", "badgeclass": "b-teal", "latest": "Estimator to display employer contributions in a simplified format; approved into the sprint. No update this call.", "task": "NIWD-1772", "meta": ["Olivia / Shounak", "Jul 20", "in sprint"] },
-    { "icon": "", "name": "Estimator Table Rating Support", "badge": "Verifying", "badgeclass": "b-amber", "latest": "Bug believed resolved by recent changes; awaiting final confirmation before the task can be closed. No update this call.", "task": "NIWD-2018", "meta": ["Kyle / Shounak", "Jul 20", "confirming"] },
-    { "icon": "", "name": "Low Point Data (NLG / Allianz)", "badge": "Investigating", "badgeclass": "b-amber", "latest": "Low-point values differ from bank data on National Life and Allianz illustrations; renewal data handled differently from first-year. Kyle testing against sample illustrations, with the option to build a scrap report. No update this call.", "task": null, "meta": ["Kyle / Judy", "Jul 20", "investigating"] },
-    { "icon": "", "name": "Action Item Notes on Illustration Changes", "badge": "In progress", "badgeclass": "b-blue", "latest": "Add a notes field when agents/clients request illustration changes so requests are trackable (today they land in the illustration inbox). No update this call.", "task": "NIWD-1983", "meta": ["Shounak / Olivia", "Jul 20", "to build"] },
-    { "icon": "", "name": "Estimator to Agent-Portal Invitations", "badge": "Queued", "badgeclass": "b-blue", "latest": "'Create Invitation' CTA from Estimator results, dependent on adding the standalone Estimator to the agent portal (NIWD-1792); tasks to be linked. No update this call.", "task": "NIWD-1793", "meta": ["Kyle", "Jul 20", "linking"] },
-    { "icon": "", "name": "Payments Center to ePay / Notifications Sync", "badge": "Queued", "badgeclass": "b-teal", "latest": "Sync monthly installment due-date changes to ePay transaction requests and existing notification schedules; moved into the new sprint. No update this call.", "task": "NIWD-1825", "meta": ["Kyle / Shounak", "Jul 20", "in sprint"] },
-    { "icon": "", "name": "GWT Gifter Portal - Verify Label", "badge": "In progress", "badgeclass": "b-grey", "latest": "Removal of the 'Verify' status label; task likely to be deleted pending final input. No update this call.", "task": "NIWD-1880", "meta": ["Shounak / Olivia", "Jul 20", "pending input"] },
-    { "icon": "", "name": "Bank Dropbox / Client File Uploads", "badge": "Needs input", "badgeclass": "b-amber", "latest": "Uploading trunch + client files to the bank Dropbox/Egnyte; document locations still being defined. Final docs go to the carrier when sent per client; trunch-specific docs pull at the trunch-master stage. No update this call.", "task": "NIWD-2053", "meta": ["Olivia / Judy", "Jul 20", "defining"] },
-    { "icon": "", "name": "Missing Statements & Scraper Data Gaps", "badge": "Investigating", "badgeclass": "b-amber", "latest": "Annual-review statement-data task under review; batch request to National Life and date-logic fix still in play. No update this call.", "task": "NIWD-2019", "meta": ["Shounak / Mohit", "Jul 20", "updating"] },
-    { "icon": "", "name": "DBR / Master-Settlor Data Load", "badge": "Blocker", "badgeclass": "b-purple", "latest": "Master-settlor emails to be pulled where the settlor is not the insured, and trust names/EINs overwritten from the verified Provident list; DBR task updated to require emails so it can reprocess. No update this call.", "task": "NIWD-1771", "meta": ["Mohit / Olivia", "Jul 17", "waiting"] },
-    { "icon": "", "name": "Payments Center & Tranche Mgmt Integration", "badge": "In progress", "badgeclass": "b-teal", "latest": "New payment UI - annual baselines, expectation statuses, rejection workflow with supporting-doc requests, and full audit history - to be mapped into Tranche Management and released in stages. No update this call.", "task": "NIWD-1606", "meta": ["Kyle / Shounak", "Jul 17", "staged release"] },
-    { "icon": "", "name": "Illustrated Surrender Values (Tranche 66/67)", "badge": "In progress", "badgeclass": "b-amber", "latest": "Tranche 66 pulled with 9 of 94 missing data; approved to run Tranche 67+ while the Tranche-66 gaps are cleaned up. No update this call.", "task": "NIWD-1753", "meta": ["Mohit / Kyle", "Jul 17", "running"] }
-  ],
-  "urgent": [
-    { "title": "Agent offboarding & access review - departing agent's access disabled; downloaded-document activity compiled for a possible non-compete review", "who": "dev/admin - Judy / Olivia", "task": null },
-    { "title": "Status standardization spec - Kyle to hand Jamin the carrier status lists + Confluence docs; Jamin to map carrier statuses to internal buckets", "who": "product - Jamin / Kyle", "task": "NIWD-2070" },
-    { "title": "ePay tranche lock blocks edits on not-yet-in-force policies - loosen the lock for pre-in-force policies", "who": "dev - Kyle / Mohit", "task": "NIWD-2075" },
-    { "title": "Carrier systematic-allocation-change form - Sept 26 deadline; pick a handling option + run client/agent outreach off monthly crediting", "who": "product - Judy / Shounak", "task": null }
-  ],
-  "dev_tagged": [
-    { "task": "NIWD-2070", "text": "Standardize statuses across ILIA - account/enrollment/policy groups; map carrier-provided statuses (Allianz 14, National Life 8) one-to-one, requirements under enrollment." },
-    { "task": "NIWD-2069", "text": "National Life DocuSign certificates - name and save completion certificates to Client Documents, mirroring the Allianz auto-save process." },
-    { "task": "NIWD-2075", "text": "Tranche Management - remove/loosen the ePay tranche-number lock so not-yet-in-force policies stay editable." },
-    { "task": "NIWD-2072", "text": "Add policy/account status changes (incl. new admin buckets) to the Admin Activity Log." },
-    { "task": "NIWD-2074", "text": "Client personal-info-change documents + beneficiary-form error - visibility confirmed after refresh; verify the underlying action item." },
-    { "task": "NIWD-904", "text": "Allocation combination failure - update outdated staging rates, retest the sample payload, and comment with findings." },
-    { "task": "NIWD-1999", "text": "Kaizen custom-design wizard - replace the contribution-vs-death-benefit page with a direct death-benefit entry field." },
-    { "task": "NIWD-1772", "text": "Simplify the employer-contribution display in the estimator custom-design screen." },
-    { "task": "NIWD-2018", "text": "Estimator table rating support - confirm the recent fix, then close the task." },
-    { "task": "NIWD-1983", "text": "Add a notes field for agent/client illustration-change requests that creates a trackable admin action item." },
-    { "task": "NIWD-1793", "text": "Add a 'Create Invitation' CTA to Estimator results; link to the standalone-Estimator-in-agent-portal task (NIWD-1792)." },
-    { "task": "NIWD-1825", "text": "Sync monthly installment due-date changes to ePay transaction requests (and existing notification schedules)." },
-    { "task": "NIWD-2053", "text": "Bank Dropbox/Egnyte - finalize document locations and upload trunch + client files for each new tranche." }
-  ],
-  "stats": {
-    "calls": 7, "themes": 22, "urgent": 4, "dev": 13, "blockers": 4,
-    "pills": [
-      { "t": "Status Standardization", "c": "b-blue" },
-      { "t": "Agent Offboarding", "c": "b-purple" },
-      { "t": "NL DocuSign Certs", "c": "b-blue" },
-      { "t": "Irrevocable Trust / Tranche B", "c": "b-amber" },
-      { "t": "ePay Tranche Lock", "c": "b-teal" },
-      { "t": "Close-Tranche Automation", "c": "b-teal" }
-    ]
+  {
+   "title": "No agreed protocol for agents who move to competitors while keeping client business",
+   "ask": "Management to formalize the offboarding protocol - the departing-agent case this call was handled ad hoc (access disabled, clients retained servicing, activity compiled for a possible non-compete). Codify the standard.",
+   "task": null
+  },
+  {
+   "title": "Irrevocable-trust handling needs a definitive spec before configuration",
+   "ask": "Confirm the full requirements and DocuSign needs for revocable-to-irrevocable trust conversions, then implement a status/flag (not a new tranche) plus a Domo report formula to segregate affected clients for the bank.",
+   "task": null
+  },
+  {
+   "title": "DBR reprocessing still waiting on the master-settlor data load",
+   "ask": "Pull the missing master-settlor emails (settlor not the insured) and overwrite trust names/EINs from the Provident list, then reprocess (Mohit / Olivia). No update this call.",
+   "task": "NIWD-1771"
   }
+ ],
+ "needs_tasked": [
+  {
+   "t": "Irrevocable-trust identifier - add a status/flag field to ILIA and a Domo report formula to segregate revocable-to-irrevocable conversions (keep original tranche, no DB rebuild)",
+   "pm": "Chris / Shounak"
+  },
+  {
+   "t": "Automated Close-Tranche function - closing a tranche auto-advances remaining prospects to the next tranche, replacing manual bulk transfers",
+   "pm": "Chris / Judy"
+  },
+  {
+   "t": "Restrict bulk tranche moves to a single designated owner to prevent premature/unauthorized transfers",
+   "pm": "Judy"
+  },
+  {
+   "t": "Carrier systematic-allocation-change form - pick a handling option and build the client/agent outreach",
+   "pm": "Judy / Shounak"
+  }
+ ],
+ "latest_call": {
+  "title": "Dev Meeting",
+  "date": "Wed - Jul 22, 2026",
+  "source": "via Gemini (Google Meet)",
+  "lede": "Servicing + platform call. Headlines: a departing agent's ILIA access is being disabled while their clients keep servicing access, with downloaded-document activity compiled for a possible non-compete review; the status-standardization project aligned on using carrier-provided statuses (Allianz's 14, National Life's 8) mapped one-to-one into three buckets - account, enrollment, and policy - with underwriting/requirements living under enrollment (NIWD-2070); National Life DocuSign completion certificates will mirror the Allianz auto-save process going forward (NIWD-2069); revocable-to-irrevocable trust conversions will be handled with a status flag / 'Tranche B' identifier rather than a new tranche or database rebuild; and ePay tranche-number locking that blocks edits on not-yet-in-force policies will be loosened (NIWD-2075), with bulk tranche moves restricted to one owner and a new system Close-Tranche function that auto-advances remaining prospects.",
+  "channels": [
+   {
+    "label": "Inside ILIA",
+    "color": "#0076BD",
+    "items": [
+     {
+      "text": "Status standardization: split ILIA statuses into three groups - account status (invited, opened email, created, disabled), enrollment status (product-enrollment steps, including underwriting and requirements), and policy status (high-level events like issued, surrendered, inactive).",
+      "task": "NIWD-2070"
+     },
+     {
+      "text": "Carrier-mapped policy statuses: adopt carrier-provided statuses one-to-one (Allianz 14, National Life 8) rather than a custom internal bucket, so agents keep familiar terminology; Jamin to update the planning doc with a visual breakdown of all status types to roll up into consolidated categories.",
+      "task": "NIWD-2070"
+     },
+     {
+      "text": "Admin status buckets: 'medically declined', 'client declined', and 'inactive' were added to the 'did not issue' bucket and treated as administrative prospect actions.",
+      "task": "NIWD-2072"
+     },
+     {
+      "text": "Irrevocable-trust identifier: add a status/flag to identify revocable-to-irrevocable trust conversions instead of building a new tranche; keep affected clients in their original tranche via a 'Tranche B' filter so funding dates and payment timelines stay synced.",
+      "task": null
+     },
+     {
+      "text": "Client document visibility: a client's personal-information-change documents were not showing; confirmed visible after a refresh during a screen-share, so no code change needed.",
+      "task": "NIWD-2074"
+     }
+    ]
+   },
+   {
+    "label": "Carriers & vendors",
+    "color": "#0891b2",
+    "items": [
+     {
+      "text": "National Life DocuSign certificates: completion certificates are not being captured/named for National Life the way they are for Allianz (they save to the storage bucket but stay unnamed); future National Life applications will mirror the Allianz auto-save process. No retroactive backfill of historical records needed.",
+      "task": "NIWD-2069"
+     }
+    ]
+   },
+   {
+    "label": "Data & servicing",
+    "color": "#c47f0a",
+    "items": [
+     {
+      "text": "ePay tranche-number lock: policies are being locked when moved from one tranche to the next as an ePay payment posts near the deadline, which blocks edits; the lock is intended behavior once a payment is marked received, but it will be loosened so not-yet-in-force policies stay editable.",
+      "task": "NIWD-2075"
+     },
+     {
+      "text": "Tranche move controls: restrict bulk tranche moves to a single designated owner to prevent premature or unauthorized transfers; the three accounts locked in error have already been fixed.",
+      "task": null
+     },
+     {
+      "text": "Automated tranche closing: build a system Close-Tranche function that automatically advances remaining prospects to the next tranche, replacing manual bulk transfers; verify all in-force policies are correctly identified before closing historical tranches.",
+      "task": null
+     },
+     {
+      "text": "Irrevocable-trust reporting: flag clients converting to irrevocable status (e.g., moving out of Tranche 75) and segregate them via a Domo report formula rather than rebuilding database architecture; DocuSign handled as one-offs by Chris after the requirements are confirmed.",
+      "task": null
+     }
+    ]
+   },
+   {
+    "label": "Decisions aligned",
+    "color": "#1d6b34",
+    "items": [
+     {
+      "text": "Status standardization uses carrier-provided statuses inside ILIA rather than a custom internal bucket system.",
+      "task": null
+     },
+     {
+      "text": "Underwriting/requirements statuses live under enrollment; policy statuses stay reserved for high-level events (issued, surrendered, inactive).",
+      "task": null
+     },
+     {
+      "text": "Future National Life applications mirror the Allianz certificate auto-save process; no retroactive update of historical records.",
+      "task": null
+     },
+     {
+      "text": "Revocable-to-irrevocable trust conversions handled via a status field / 'Tranche B' identifier that keeps the original tranche - no new tranche and no database rebuild.",
+      "task": null
+     },
+     {
+      "text": "A system-based Close-Tranche function replaces manual bulk transfers, and bulk moves are restricted to one designated owner.",
+      "task": null
+     },
+     {
+      "text": "A departing agent's account access is disabled while their clients retain servicing access; document-download activity is compiled for potential non-compete enforcement.",
+      "task": null
+     }
+    ]
+   }
+  ]
+ },
+ "themes": [
+  {
+   "icon": "",
+   "name": "Status Standardization (Account / Enrollment / Policy)",
+   "badge": "Decision",
+   "badgeclass": "b-blue",
+   "latest": "Aligned on splitting ILIA statuses into account, enrollment, and policy groups and mapping carrier-provided statuses one-to-one (Allianz 14, National Life 8) rather than a custom internal bucket. Underwriting/requirements sit under enrollment; policy status stays high-level (issued/surrendered/inactive). Jamin to add a visual breakdown of all status types to the planning doc.",
+   "task": "NIWD-2070",
+   "meta": [
+    "Jamin / Kyle / Shounak",
+    "Jul 22",
+    "aligned"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Agent Offboarding & Access Review",
+   "badge": "Urgent",
+   "badgeclass": "b-purple",
+   "latest": "A departing agent (now with a competitor) is having ILIA account access disabled while their clients keep servicing access; the agent is directed to contact servicing for information. Downloaded-document activity was tracked via FullStory (screenshots can't be confirmed) and compiled for legal to weigh non-compete enforcement. Broader offboarding protocol still to be formalized with management.",
+   "task": null,
+   "meta": [
+    "Judy / Olivia",
+    "Jul 22",
+    "in review"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "National Life DocuSign Certificates",
+   "badge": "Decision",
+   "badgeclass": "b-blue",
+   "latest": "Completion certificates aren't captured/named for National Life the way they are for Allianz (they save to the storage bucket but stay unnamed). Future National Life applications will mirror the Allianz auto-save process; no retroactive backfill needed.",
+   "task": "NIWD-2069",
+   "meta": [
+    "Olivia / Mohit",
+    "Jul 22",
+    "aligned"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Irrevocable Trust 'Tranche B' Handling",
+   "badge": "Needs input",
+   "badgeclass": "b-amber",
+   "latest": "Revocable-to-irrevocable trust conversions will be identified with a status/flag and a 'Tranche B' filter that keeps clients in their original tranche (funding dates and payment timelines stay synced), plus a Domo report formula to segregate them for the bank - avoiding a new tranche or DB rebuild. Requirements and DocuSign needs to be confirmed before configuration.",
+   "task": null,
+   "meta": [
+    "Judy / Chris / Shounak",
+    "Jul 22",
+    "defining"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "ePay Tranche Lock / Not-In-Force Editing",
+   "badge": "Fixing",
+   "badgeclass": "b-teal",
+   "latest": "Policies get locked when moved to the next tranche as an ePay payment posts near the deadline, blocking edits. The lock triggers when payment is marked received (intended behavior), but it will be loosened so policies that aren't yet in force stay editable.",
+   "task": "NIWD-2075",
+   "meta": [
+    "Kyle / Mohit",
+    "Jul 22",
+    "to build"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Automated Tranche Closing",
+   "badge": "In progress",
+   "badgeclass": "b-teal",
+   "latest": "Build a system Close-Tranche function that auto-advances remaining prospects to the next tranche, replacing manual bulk transfers and reducing errors. Bulk moves to be restricted to one designated owner; historical tranches to be closed once all in-force policies are verified.",
+   "task": null,
+   "meta": [
+    "Chris / Judy",
+    "Jul 22",
+    "to build"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Great Wealth Transfer Review",
+   "badge": "In progress",
+   "badgeclass": "b-grey",
+   "latest": "Judy and Jamin to review the Great Wealth Transfer process together before presenting it to leadership; review scheduled immediately after this call.",
+   "task": "NIWD-1889",
+   "meta": [
+    "Jamin / Judy",
+    "Jul 22",
+    "reviewing"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Systematic Allocation Change Form (Sept 26)",
+   "badge": "In progress",
+   "badgeclass": "b-teal",
+   "latest": "New carrier allocation-change form due Sept 26. Two options being weighed (stop new + terminate existing on next monthly transfer vs. stop new + run existing to depletion). Client/agent outreach planned to move off monthly crediting. No update this call.",
+   "task": null,
+   "meta": [
+    "Judy / Shounak",
+    "Jul 20",
+    "needs task"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Allocation Combination Bug",
+   "badge": "Fixing",
+   "badgeclass": "b-amber",
+   "latest": "A specific allocation combination is failing; traced to outdated rates in staging. Kyle to update staging rates, retest the sample payload, and comment on the task. No update this call.",
+   "task": "NIWD-904",
+   "meta": [
+    "Kyle / Mohit",
+    "Jul 20",
+    "retesting"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Kaizen Custom Design Wizard",
+   "badge": "In progress",
+   "badgeclass": "b-teal",
+   "latest": "Wizard UI to drop the contribution-vs-death-benefit page in favor of a direct death-benefit entry field; confirmed ready for implementation. No update this call.",
+   "task": "NIWD-1999",
+   "meta": [
+    "Kyle",
+    "Jul 20",
+    "ready"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Employer Contribution UI",
+   "badge": "In progress",
+   "badgeclass": "b-teal",
+   "latest": "Estimator to display employer contributions in a simplified format; approved into the sprint. No update this call.",
+   "task": "NIWD-1772",
+   "meta": [
+    "Olivia / Shounak",
+    "Jul 20",
+    "in sprint"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Estimator Table Rating Support",
+   "badge": "Verifying",
+   "badgeclass": "b-amber",
+   "latest": "Bug believed resolved by recent changes; awaiting final confirmation before the task can be closed. No update this call.",
+   "task": "NIWD-2018",
+   "meta": [
+    "Kyle / Shounak",
+    "Jul 20",
+    "confirming"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Low Point Data (NLG / Allianz)",
+   "badge": "Investigating",
+   "badgeclass": "b-amber",
+   "latest": "Low-point values differ from bank data on National Life and Allianz illustrations; renewal data handled differently from first-year. Kyle testing against sample illustrations, with the option to build a scrap report. No update this call.",
+   "task": null,
+   "meta": [
+    "Kyle / Judy",
+    "Jul 20",
+    "investigating"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Action Item Notes on Illustration Changes",
+   "badge": "In progress",
+   "badgeclass": "b-blue",
+   "latest": "Add a notes field when agents/clients request illustration changes so requests are trackable (today they land in the illustration inbox). No update this call.",
+   "task": "NIWD-1983",
+   "meta": [
+    "Shounak / Olivia",
+    "Jul 20",
+    "to build"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Estimator to Agent-Portal Invitations",
+   "badge": "Queued",
+   "badgeclass": "b-blue",
+   "latest": "'Create Invitation' CTA from Estimator results, dependent on adding the standalone Estimator to the agent portal (NIWD-1792); tasks to be linked. No update this call.",
+   "task": "NIWD-1793",
+   "meta": [
+    "Kyle",
+    "Jul 20",
+    "linking"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Payments Center to ePay / Notifications Sync",
+   "badge": "Queued",
+   "badgeclass": "b-teal",
+   "latest": "Sync monthly installment due-date changes to ePay transaction requests and existing notification schedules; moved into the new sprint. No update this call.",
+   "task": "NIWD-1825",
+   "meta": [
+    "Kyle / Shounak",
+    "Jul 20",
+    "in sprint"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "GWT Gifter Portal - Verify Label",
+   "badge": "In progress",
+   "badgeclass": "b-grey",
+   "latest": "Removal of the 'Verify' status label; task likely to be deleted pending final input. No update this call.",
+   "task": "NIWD-1880",
+   "meta": [
+    "Shounak / Olivia",
+    "Jul 20",
+    "pending input"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Bank Dropbox / Client File Uploads",
+   "badge": "Needs input",
+   "badgeclass": "b-amber",
+   "latest": "Uploading trunch + client files to the bank Dropbox/Egnyte; document locations still being defined. Final docs go to the carrier when sent per client; trunch-specific docs pull at the trunch-master stage. No update this call.",
+   "task": "NIWD-2053",
+   "meta": [
+    "Olivia / Judy",
+    "Jul 20",
+    "defining"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Missing Statements & Scraper Data Gaps",
+   "badge": "Investigating",
+   "badgeclass": "b-amber",
+   "latest": "Annual-review statement-data task under review; batch request to National Life and date-logic fix still in play. No update this call.",
+   "task": "NIWD-2019",
+   "meta": [
+    "Shounak / Mohit",
+    "Jul 20",
+    "updating"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "DBR / Master-Settlor Data Load",
+   "badge": "Blocker",
+   "badgeclass": "b-purple",
+   "latest": "Master-settlor emails to be pulled where the settlor is not the insured, and trust names/EINs overwritten from the verified Provident list; DBR task updated to require emails so it can reprocess. No update this call.",
+   "task": "NIWD-1771",
+   "meta": [
+    "Mohit / Olivia",
+    "Jul 17",
+    "waiting"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Payments Center & Tranche Mgmt Integration",
+   "badge": "In progress",
+   "badgeclass": "b-teal",
+   "latest": "New payment UI - annual baselines, expectation statuses, rejection workflow with supporting-doc requests, and full audit history - to be mapped into Tranche Management and released in stages. No update this call.",
+   "task": "NIWD-1606",
+   "meta": [
+    "Kyle / Shounak",
+    "Jul 17",
+    "staged release"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Illustrated Surrender Values (Tranche 66/67)",
+   "badge": "In progress",
+   "badgeclass": "b-amber",
+   "latest": "Tranche 66 pulled with 9 of 94 missing data; approved to run Tranche 67+ while the Tranche-66 gaps are cleaned up. No update this call.",
+   "task": "NIWD-1753",
+   "meta": [
+    "Mohit / Kyle",
+    "Jul 17",
+    "running"
+   ]
+  }
+ ],
+ "urgent": [
+  {
+   "title": "Agent offboarding & access review - departing agent's access disabled; downloaded-document activity compiled for a possible non-compete review",
+   "who": "dev/admin - Judy / Olivia",
+   "task": null
+  },
+  {
+   "title": "Status standardization spec - Kyle to hand Jamin the carrier status lists + Confluence docs; Jamin to map carrier statuses to internal buckets",
+   "who": "product - Jamin / Kyle",
+   "task": "NIWD-2070"
+  },
+  {
+   "title": "ePay tranche lock blocks edits on not-yet-in-force policies - loosen the lock for pre-in-force policies",
+   "who": "dev - Kyle / Mohit",
+   "task": "NIWD-2075"
+  },
+  {
+   "title": "Carrier systematic-allocation-change form - Sept 26 deadline; pick a handling option + run client/agent outreach off monthly crediting",
+   "who": "product - Judy / Shounak",
+   "task": null
+  }
+ ],
+ "dev_tagged": [
+  {
+   "task": "NIWD-2070",
+   "text": "Standardize statuses across ILIA - account/enrollment/policy groups; map carrier-provided statuses (Allianz 14, National Life 8) one-to-one, requirements under enrollment."
+  },
+  {
+   "task": "NIWD-2069",
+   "text": "National Life DocuSign certificates - name and save completion certificates to Client Documents, mirroring the Allianz auto-save process."
+  },
+  {
+   "task": "NIWD-2075",
+   "text": "Tranche Management - remove/loosen the ePay tranche-number lock so not-yet-in-force policies stay editable."
+  },
+  {
+   "task": "NIWD-2072",
+   "text": "Add policy/account status changes (incl. new admin buckets) to the Admin Activity Log."
+  },
+  {
+   "task": "NIWD-2074",
+   "text": "Client personal-info-change documents + beneficiary-form error - visibility confirmed after refresh; verify the underlying action item."
+  },
+  {
+   "task": "NIWD-904",
+   "text": "Allocation combination failure - update outdated staging rates, retest the sample payload, and comment with findings."
+  },
+  {
+   "task": "NIWD-1999",
+   "text": "Kaizen custom-design wizard - replace the contribution-vs-death-benefit page with a direct death-benefit entry field."
+  },
+  {
+   "task": "NIWD-1772",
+   "text": "Simplify the employer-contribution display in the estimator custom-design screen."
+  },
+  {
+   "task": "NIWD-2018",
+   "text": "Estimator table rating support - confirm the recent fix, then close the task."
+  },
+  {
+   "task": "NIWD-1983",
+   "text": "Add a notes field for agent/client illustration-change requests that creates a trackable admin action item."
+  },
+  {
+   "task": "NIWD-1793",
+   "text": "Add a 'Create Invitation' CTA to Estimator results; link to the standalone-Estimator-in-agent-portal task (NIWD-1792)."
+  },
+  {
+   "task": "NIWD-1825",
+   "text": "Sync monthly installment due-date changes to ePay transaction requests (and existing notification schedules)."
+  },
+  {
+   "task": "NIWD-2053",
+   "text": "Bank Dropbox/Egnyte - finalize document locations and upload trunch + client files for each new tranche."
+  }
+ ],
+ "stats": {
+  "calls": 7,
+  "themes": 22,
+  "urgent": 4,
+  "dev": 13,
+  "blockers": 4,
+  "pills": [
+   {
+    "t": "Status Standardization",
+    "c": "b-blue"
+   },
+   {
+    "t": "Agent Offboarding",
+    "c": "b-purple"
+   },
+   {
+    "t": "NL DocuSign Certs",
+    "c": "b-blue"
+   },
+   {
+    "t": "Irrevocable Trust / Tranche B",
+    "c": "b-amber"
+   },
+   {
+    "t": "ePay Tranche Lock",
+    "c": "b-teal"
+   },
+   {
+    "t": "Close-Tranche Automation",
+    "c": "b-teal"
+   }
+  ]
+ },
+ "new_projects": {
+  "updated": "2026-07-22",
+  "source": "CIH · mined from Gemini dev-call recaps",
+  "last_call": {
+   "date": "2026-07-22",
+   "label": "Wed · Jul 22, 2026",
+   "count": 7,
+   "items": [
+    "Automate certificate uploads — mirror the Allianz cert process for National Life policy docs",
+    "Standardize statuses: group into enrollment vs policy, aligned to carrier terminology",
+    "Map carrier statuses to internal status buckets (summary doc)",
+    "Add a field/status to identify irrevocable trusts in ILIA",
+    "Use reporting flags for trust conversions (instead of a DB rebuild)",
+    "Automate tranche closing — auto-move prospects to the next tranche on close",
+    "Restrict bulk tranche-move authority to a single designated person"
+   ],
+   "not_ticketed": 5
+  },
+  "avg_per_call": 6.6,
+  "calls_analyzed": 15,
+  "total_raised": 99,
+  "pending": [
+   "Decouple account / policy / participant statuses; add “Deceased” to policy status",
+   "Map carrier statuses to internal status buckets",
+   "Identify irrevocable trusts in ILIA (new field/status)",
+   "Reporting flags for trust conversions (no DB rebuild)",
+   "Automate tranche closing (auto-advance prospects on close)",
+   "Restrict bulk tranche-move authority to one designated owner",
+   "Update scraping logic for interest-bearing segments; detect monthly vs annual statements",
+   "Add total-premium and total-interest fields to tranche management",
+   "Add SSN and email fields to trust forms",
+   "Move drop folders under account management",
+   "Holding-tranche: keep original tranche number for inactive/declined policies",
+   "Agent-reassignment process for client policies",
+   "Report policies missing a policy number",
+   "Require illustrated surrender value before death-benefit-reduction imports",
+   "Make agent number mandatory at registration; extract existing agent numbers",
+   "Trim unnecessary required fields from DocuSign templates",
+   "ePay: capture transaction numbers; handle recurring monthly payments",
+   "Dropped-client list with delete/restore + move-back-to-prospect filter",
+   "Admin email alert when a case is set to surrendered; add surrender-workflow logging",
+   "Automate missing-trust-date script; incrementally complete trust details (EIN, date, revocability)",
+   "Reclassify client change requests from bugs to tasks",
+   "Symmetra: fix product label to Kaizen, fixed crediting rates, death-benefit-only estimator, allocation naming",
+   "Preserve half-filled form data on session timeout (platform-wide)",
+   "Disable (not delete) inactive accounts for re-marketing; define prospect vs active",
+   "Auto-sync signed documents into ILIA",
+   "Convert written amendment labels to numerical values",
+   "Growth calc using 11 monthly confirmation statements",
+   "IL EFT payment methods setup",
+   "Beneficiary form: add Country field universally",
+   "IL applications: re-enable financial questions; update IL mappings (doc name, financial forms, HIV form)",
+   "Onboard CMS to the internal side",
+   "Send living-benefits attributes to the Alliance/estimator API",
+   "Custom-illustration UI: save admin-input values (multi-step confirmation)"
+  ],
+  "history": [
+   {
+    "date": "2026-07-22",
+    "label": "Wed · Jul 22",
+    "count": 7
+   },
+   {
+    "date": "2026-07-21",
+    "label": "Tue · Jul 21",
+    "count": 9
+   },
+   {
+    "date": "2026-07-20",
+    "label": "Mon · Jul 20",
+    "count": 6
+   },
+   {
+    "date": "2026-07-17",
+    "label": "Thu · Jul 17",
+    "count": 7
+   },
+   {
+    "date": "2026-07-16",
+    "label": "Wed · Jul 16",
+    "count": 3
+   },
+   {
+    "date": "2026-07-15",
+    "label": "Tue · Jul 15",
+    "count": 7
+   },
+   {
+    "date": "2026-07-14",
+    "label": "Mon · Jul 14",
+    "count": 5
+   },
+   {
+    "date": "2026-07-10",
+    "label": "Thu · Jul 10",
+    "count": 4
+   },
+   {
+    "date": "2026-07-09",
+    "label": "Wed · Jul 9",
+    "count": 7
+   },
+   {
+    "date": "2026-07-08",
+    "label": "Tue · Jul 8",
+    "count": 9
+   },
+   {
+    "date": "2026-07-07",
+    "label": "Mon · Jul 7",
+    "count": 9
+   },
+   {
+    "date": "2026-07-06",
+    "label": "Sun · Jul 6",
+    "count": 6
+   },
+   {
+    "date": "2026-07-02",
+    "label": "Wed · Jul 2",
+    "count": 5
+   },
+   {
+    "date": "2026-06-09",
+    "label": "Mon · Jun 9",
+    "count": 7
+   },
+   {
+    "date": "2025-11-17",
+    "label": "Mon · Nov 17 '25",
+    "count": 8
+   }
+  ],
+  "pending_verified": true,
+  "corpus_count": 1761
+ }
 }
