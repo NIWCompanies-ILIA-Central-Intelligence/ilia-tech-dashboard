@@ -549,17 +549,14 @@
   "last_call": {
    "date": "2026-07-22",
    "label": "Wed · Jul 22, 2026",
-   "count": 7,
+   "count": 5,
    "items": [
-    "Automate certificate uploads — mirror the Allianz cert process for National Life policy docs",
-    "Standardize statuses: group into enrollment vs policy, aligned to carrier terminology",
-    "Map carrier statuses to internal status buckets (summary doc)",
-    "Add a field/status to identify irrevocable trusts in ILIA",
-    "Use reporting flags for trust conversions (instead of a DB rebuild)",
-    "Automate tranche closing — auto-move prospects to the next tranche on close",
-    "Restrict bulk tranche-move authority to a single designated person"
-   ],
-   "not_ticketed": 5
+    "Map carrier statuses to internal status buckets",
+    "Identify irrevocable trusts in ILIA (new field/status)",
+    "Reporting flags for trust conversions (no DB rebuild)",
+    "Automate tranche closing (auto-advance prospects on close)",
+    "Restrict bulk tranche-move authority to one designated owner"
+   ]
   },
   "avg_per_call": 6.6,
   "calls_analyzed": 15,
