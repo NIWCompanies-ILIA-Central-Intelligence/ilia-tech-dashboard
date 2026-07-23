@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-22",
+ "updated": "2026-07-23",
  "sample": false,
  "intro": "Dev-call intelligence - the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static - the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
@@ -34,6 +34,14 @@
  ],
  "needs_tasked": [
   {
+   "t": "Auto-generate per-tranche document folders (eliminate manual folder creation) + keep ILIA uploads separate from historical folders",
+   "pm": "Olivia / Judy"
+  },
+  {
+   "t": "Update system imports for the new National Life allocation form + index selections",
+   "pm": "Kyle / Shounak"
+  },
+  {
    "t": "Irrevocable-trust identifier - add a status/flag field to ILIA and a Domo report formula to segregate revocable-to-irrevocable conversions (keep original tranche, no DB rebuild)",
    "pm": "Chris / Shounak"
   },
@@ -52,33 +60,25 @@
  ],
  "latest_call": {
   "title": "Dev Meeting",
-  "date": "Wed - Jul 22, 2026",
+  "date": "Thu - Jul 23, 2026",
   "source": "via Gemini (Google Meet)",
-  "lede": "Servicing + platform call. Headlines: a departing agent's ILIA access is being disabled while their clients keep servicing access, with downloaded-document activity compiled for a possible non-compete review; the status-standardization project aligned on using carrier-provided statuses (Allianz's 14, National Life's 8) mapped one-to-one into three buckets - account, enrollment, and policy - with underwriting/requirements living under enrollment (NIWD-2070); National Life DocuSign completion certificates will mirror the Allianz auto-save process going forward (NIWD-2069); revocable-to-irrevocable trust conversions will be handled with a status flag / 'Tranche B' identifier rather than a new tranche or database rebuild; and ePay tranche-number locking that blocks edits on not-yet-in-force policies will be loosened (NIWD-2075), with bulk tranche moves restricted to one owner and a new system Close-Tranche function that auto-advances remaining prospects.",
+  "lede": "Documentation + data-cleanup call. Headlines: a trust-naming logic bug — automated numbering wrongly appended a number to trust names for single-policy clients — will be fixed by skipping the number on the first trust and numbering only from the second policy onward (folds into NIWD-1844); a document-workflow protocol was set to keep formal/historical documents separated from automated ILIA uploads, with a push to auto-generate per-tranche document folders instead of creating them by hand; missing illustrated surrender values and missing National Life carrier data (tranches 31 & 63) are being merged in; and system-import requirements are being updated for the new National Life allocation form and index selections. Systematic-allocation client outreach is being coordinated (with Todd, Marissa, and now Shounak) ahead of the Sept 26 form deadline, with an Alliance call being prepped.",
   "channels": [
    {
     "label": "Inside ILIA",
     "color": "#0076BD",
     "items": [
      {
-      "text": "Status standardization: split ILIA statuses into three groups - account status (invited, opened email, created, disabled), enrollment status (product-enrollment steps, including underwriting and requirements), and policy status (high-level events like issued, surrendered, inactive).",
-      "task": "NIWD-2070"
+      "text": "Trust naming fix: automated logic incorrectly appended a number to single-policy trust names; decision is to skip numbering on the first trust and apply it only from the second policy onward — implemented as a logic change on the existing trust-naming task.",
+      "task": "NIWD-1844"
      },
      {
-      "text": "Carrier-mapped policy statuses: adopt carrier-provided statuses one-to-one (Allianz 14, National Life 8) rather than a custom internal bucket, so agents keep familiar terminology; Jamin to update the planning doc with a visual breakdown of all status types to roll up into consolidated categories.",
-      "task": "NIWD-2070"
-     },
-     {
-      "text": "Admin status buckets: 'medically declined', 'client declined', and 'inactive' were added to the 'did not issue' bucket and treated as administrative prospect actions.",
-      "task": "NIWD-2072"
-     },
-     {
-      "text": "Irrevocable-trust identifier: add a status/flag to identify revocable-to-irrevocable trust conversions instead of building a new tranche; keep affected clients in their original tranche via a 'Tranche B' filter so funding dates and payment timelines stay synced.",
+      "text": "Auto-generate document folders: build a process that creates per-tranche document folders automatically, eliminating manual folder creation.",
       "task": null
      },
      {
-      "text": "Client document visibility: a client's personal-information-change documents were not showing; confirmed visible after a refresh during a screen-share, so no code change needed.",
-      "task": "NIWD-2074"
+      "text": "Segregate ILIA uploads: keep ILIA-upload folders separate from historical document folders within each tranche.",
+      "task": null
      }
     ]
    },
@@ -87,8 +87,12 @@
     "color": "#0891b2",
     "items": [
      {
-      "text": "National Life DocuSign certificates: completion certificates are not being captured/named for National Life the way they are for Allianz (they save to the storage bucket but stay unnamed); future National Life applications will mirror the Allianz auto-save process. No retroactive backfill of historical records needed.",
-      "task": "NIWD-2069"
+      "text": "New National Life allocation form: review the new form and confirm requirements for the upcoming product/import updates (allocation forms + index selections).",
+      "task": null
+     },
+     {
+      "text": "Alliance call prep: schedule a Lifelink pre-call and distribute meeting notes + code references to stakeholders beforehand.",
+      "task": null
      }
     ]
    },
@@ -97,19 +101,19 @@
     "color": "#c47f0a",
     "items": [
      {
-      "text": "ePay tranche-number lock: policies are being locked when moved from one tranche to the next as an ePay payment posts near the deadline, which blocks edits; the lock is intended behavior once a payment is marked received, but it will be loosened so not-yet-in-force policies stay editable.",
-      "task": "NIWD-2075"
-     },
-     {
-      "text": "Tranche move controls: restrict bulk tranche moves to a single designated owner to prevent premature or unauthorized transfers; the three accounts locked in error have already been fixed.",
+      "text": "National Life missing data: review tranches 31 & 63 to identify missing carrier data and report findings from the provided file.",
       "task": null
      },
      {
-      "text": "Automated tranche closing: build a system Close-Tranche function that automatically advances remaining prospects to the next tranche, replacing manual bulk transfers; verify all in-force policies are correctly identified before closing historical tranches.",
+      "text": "Illustrated surrender values: run a diagnostic report on the ISV task to verify the reported issues.",
+      "task": "NIWD-1753"
+     },
+     {
+      "text": "Non-ILIA policy docs: upload missing documents for policies not enrolled in ILIA and map ILIA uploads correctly to client folders.",
       "task": null
      },
      {
-      "text": "Irrevocable-trust reporting: flag clients converting to irrevocable status (e.g., moving out of Tranche 75) and segregate them via a Domo report formula rather than rebuilding database architecture; DocuSign handled as one-offs by Chris after the requirements are confirmed.",
+      "text": "Missing-document audit: review tranche folders for missing amendments and delivery receipts to ensure all required forms are present.",
       "task": null
      }
     ]
@@ -119,27 +123,15 @@
     "color": "#1d6b34",
     "items": [
      {
-      "text": "Status standardization uses carrier-provided statuses inside ILIA rather than a custom internal bucket system.",
+      "text": "Trust auto-numbering skips the first (single) trust and numbers only from the second policy onward.",
       "task": null
      },
      {
-      "text": "Underwriting/requirements statuses live under enrollment; policy statuses stay reserved for high-level events (issued, surrendered, inactive).",
+      "text": "Formal/historical documents stay separated from automated ILIA uploads; ILIA uploads live in their own per-tranche folders.",
       "task": null
      },
      {
-      "text": "Future National Life applications mirror the Allianz certificate auto-save process; no retroactive update of historical records.",
-      "task": null
-     },
-     {
-      "text": "Revocable-to-irrevocable trust conversions handled via a status field / 'Tranche B' identifier that keeps the original tranche - no new tranche and no database rebuild.",
-      "task": null
-     },
-     {
-      "text": "A system-based Close-Tranche function replaces manual bulk transfers, and bulk moves are restricted to one designated owner.",
-      "task": null
-     },
-     {
-      "text": "A departing agent's account access is disabled while their clients retain servicing access; document-download activity is compiled for potential non-compete enforcement.",
+      "text": "System imports will be updated for the new National Life allocation form and index selections.",
       "task": null
      }
     ]
@@ -147,6 +139,45 @@
   ]
  },
  "themes": [
+  {
+   "icon": "",
+   "name": "Trust Naming — Numbering Fix",
+   "badge": "Fixing",
+   "badgeclass": "b-amber",
+   "latest": "Automated logic wrongly appended a number to single-policy trust names. Fix: skip numbering on the first trust, number only from the second policy onward — applied as a logic change on the trust-naming task.",
+   "task": "NIWD-1844",
+   "meta": [
+    "Chris",
+    "Jul 23",
+    "to build"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Document Folder Workflow & Auto-Generation",
+   "badge": "Needs input",
+   "badgeclass": "b-blue",
+   "latest": "Set a protocol keeping formal/historical documents separate from automated ILIA uploads, and pushed to auto-generate per-tranche document folders instead of creating them manually. Tranche folders to be audited for missing amendments/delivery receipts.",
+   "task": null,
+   "meta": [
+    "Olivia / Judy",
+    "Jul 23",
+    "defining"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "National Life Allocation Form & Import Updates",
+   "badge": "In progress",
+   "badgeclass": "b-teal",
+   "latest": "New National Life allocation form under review; system-import requirements to be updated for the new form and index selections. Kyle confirming requirements for the product updates.",
+   "task": null,
+   "meta": [
+    "Kyle / Shounak",
+    "Jul 23",
+    "reviewing"
+   ]
+  },
   {
    "icon": "",
    "name": "Status Standardization (Account / Enrollment / Policy)",
@@ -436,27 +467,30 @@
  ],
  "urgent": [
   {
-   "title": "Agent offboarding & access review - departing agent's access disabled; downloaded-document activity compiled for a possible non-compete review",
-   "who": "dev/admin - Judy / Olivia",
-   "task": null
+   "title": "Trust-naming numbering bug — skip numbering on the first/single trust (logic change on the trust-naming task)",
+   "who": "dev - Chris",
+   "task": "NIWD-1844"
   },
   {
-   "title": "Status standardization spec - Kyle to hand Jamin the carrier status lists + Confluence docs; Jamin to map carrier statuses to internal buckets",
-   "who": "product - Jamin / Kyle",
-   "task": "NIWD-2070"
+   "title": "Illustrated surrender values — run the diagnostic report on the ISV task today and verify the issues",
+   "who": "dev - Kyle",
+   "task": "NIWD-1753"
   },
   {
-   "title": "ePay tranche lock blocks edits on not-yet-in-force policies - loosen the lock for pre-in-force policies",
-   "who": "dev - Kyle / Mohit",
-   "task": "NIWD-2075"
-  },
-  {
-   "title": "Carrier systematic-allocation-change form - Sept 26 deadline; pick a handling option + run client/agent outreach off monthly crediting",
+   "title": "Systematic-allocation client outreach — Sept 26 form deadline; coordinate outreach (Todd/Marissa/Shounak) + prep the Alliance call",
    "who": "product - Judy / Shounak",
    "task": null
   }
  ],
  "dev_tagged": [
+  {
+   "task": "NIWD-1844",
+   "text": "Trust naming — modify numbering logic to skip the first trust and number only from the second policy onward."
+  },
+  {
+   "task": "NIWD-1753",
+   "text": "Illustrated surrender values — run a diagnostic report and verify the reported issues."
+  },
   {
    "task": "NIWD-2070",
    "text": "Standardize statuses across ILIA - account/enrollment/policy groups; map carrier-provided statuses (Allianz 14, National Life 8) one-to-one, requirements under enrollment."
@@ -511,9 +545,9 @@
   }
  ],
  "stats": {
-  "calls": 7,
-  "themes": 22,
-  "urgent": 4,
+  "calls": 8,
+  "themes": 25,
+  "urgent": 3,
   "dev": 13,
   "blockers": 4,
   "pills": [
@@ -544,24 +578,25 @@
   ]
  },
  "new_projects": {
-  "updated": "2026-07-22",
+  "updated": "2026-07-23",
   "source": "CIH · mined from Gemini dev-call recaps",
   "last_call": {
-   "date": "2026-07-22",
-   "label": "Wed · Jul 22, 2026",
-   "count": 5,
+   "date": "2026-07-23",
+   "label": "Thu · Jul 23, 2026",
+   "count": 3,
    "items": [
-    "Map carrier statuses to internal status buckets",
-    "Identify irrevocable trusts in ILIA (new field/status)",
-    "Reporting flags for trust conversions (no DB rebuild)",
-    "Automate tranche closing (auto-advance prospects on close)",
-    "Restrict bulk tranche-move authority to one designated owner"
+    "Trust naming: skip auto-numbering on single-policy (1st) trust; number only 2nd policy onward",
+    "Auto-generate per-tranche document folders; keep ILIA uploads separate from historical folders",
+    "Update system imports for the new National Life allocation form + index selections"
    ]
   },
-  "avg_per_call": 6.6,
-  "calls_analyzed": 15,
+  "avg_per_call": 2.2,
+  "calls_analyzed": 16,
   "total_raised": 99,
   "pending": [
+   "Trust naming: skip auto-numbering on single-policy (1st) trust; number only 2nd policy onward",
+   "Auto-generate per-tranche document folders; keep ILIA uploads separate from historical folders",
+   "Update system imports for the new National Life allocation form + index selections",
    "Decouple account / policy / participant statuses; add “Deceased” to policy status",
    "Map carrier statuses to internal status buckets",
    "Identify irrevocable trusts in ILIA (new field/status)",
@@ -597,6 +632,11 @@
    "Custom-illustration UI: save admin-input values (multi-step confirmation)"
   ],
   "history": [
+   {
+    "date": "2026-07-23",
+    "label": "Thu · Jul 23",
+    "count": 3
+   },
    {
     "date": "2026-07-22",
     "label": "Wed · Jul 22",
