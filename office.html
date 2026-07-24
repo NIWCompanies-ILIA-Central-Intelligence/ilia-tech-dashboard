@@ -65,9 +65,8 @@ body.hhmode #latestbar,body.hhmode #hint{display:none;}
 .hhrank{margin-top:10px;font-weight:800;color:#b3560a;font-size:15px;}
 </style></head><body><div id="wrap"><canvas id="c" width="1460" height="720"></canvas></div>
 <div id="latestbar"><span id="latestSub"></span><button id="latestBtn" onclick="whatsLatest()">🗞️ What's the latest?</button></div>
-<button id="hhStart" onclick="hhOpen()">🔥 Help put out the fires!</button>
 <div id="hhBorder"><i class="hhb t"></i><i class="hhb b"></i><i class="hhb l"></i><i class="hhb r"></i></div>
-<div id="hhHud"><div id="hhScore"><span>FIRES PUT OUT</span><b id="hhScoreVal">0</b></div><div id="hhGameName">★ HELPING HANDS ★</div><div id="hhTimer"><span id="hhTimerVal">45.0</span><small>SECONDS</small></div></div>
+<div id="hhHud"><div id="hhScore"><span>FIRES PUT OUT</span><b id="hhScoreVal">0</b></div><div id="hhGameName">★ HELPING HANDS ★</div><div id="hhTimer"><span id="hhTimerVal">15.0</span><small>SECONDS</small></div></div>
 <div id="hhCtl"><button onclick="hhLeaderboard()">🏆 Leaderboard</button><button onclick="hhExit()">Exit game</button></div>
 <div id="hhModal"></div>
 <div id="hint">CIH HQ — agents in-office · people roam (A* pathfinding, no walking through walls/furniture) 🏢</div>
@@ -348,9 +347,7 @@ function drawFire(f){ const s=f.size||1; const x=Math.round(f.x),y=Math.round(f.
    g.fillStyle="rgba(90,90,90,.3)"; g.beginPath(); g.ellipse(x,y+2,8*s,3*s,0,0,7); g.fill(); return; }
  if(f.smoke){ for(let i=0;i<3;i++){ const pt=((f.t*0.55)+i*0.34)%1; g.globalAlpha=(1-pt)*0.32; g.fillStyle="#8a8f96"; g.beginPath(); g.arc(x+Math.sin((f.t+i)*2)*4*s,y-(20*s)-pt*32*s,(3+pt*6)*s,0,7); g.fill(); } g.globalAlpha=1; }
  const h=(15+flick)*s; g.fillStyle=cols[0]; flameShape(x,y,10*s,h+8*s); g.fillStyle=cols[1]; flameShape(x,y-1,6.5*s,h); g.fillStyle=cols[2]; flameShape(x,y-2,3.5*s,h-6*s);
- g.restore(); g.fillStyle="rgba(120,40,0,.35)"; g.beginPath(); g.ellipse(x,y+2,9*s,3*s,0,0,7); g.fill();
- if(typeof GAME!=="undefined"&&GAME.active&&f.clicksReq>1){ const n=f.clicksReq,rem=n-f.clicks,py=Math.round(y-h-13*s); const startX=x-(n*7-3)/2;
-   for(let i=0;i<n;i++){ g.beginPath(); g.arc(startX+i*7+2,py,2.6,0,7); g.fillStyle=i<rem?"#ffe066":"#5b6b7a"; g.fill(); g.lineWidth=1; g.strokeStyle="#0d1f2d"; g.stroke(); } } }
+ g.restore(); g.fillStyle="rgba(120,40,0,.35)"; g.beginPath(); g.ellipse(x,y+2,9*s,3*s,0,0,7); g.fill(); }
 function drawSpray(ch){ const x=Math.round(ch.x),y=Math.round(ch.y),f=ch.dir;
  g.fillStyle="#c62828"; g.fillRect(x+(f>0?6:-11),y-19,5,11); g.fillStyle="#7a1616"; g.fillRect(x+(f>0?6:-11),y-19,5,2);
  const nx=x+(f>0?12:-12),ny=y-16;
@@ -391,11 +388,17 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  g.fillStyle="#0d1f2d";g.fillRect(0,0,W,TOP);g.fillStyle="#fff";g.font="bold 18px 'Segoe UI',Arial";g.textBaseline="middle";g.textAlign="left";g.fillText("🏢  CIH Headquarters",14,TOP/2);
  g.font="12px 'DM Mono',monospace";g.fillStyle="#8fb5d6";g.fillText("agents in-office · NIW + Simplicity roaming",214,TOP/2+1);
  const t=new Date();g.textAlign="right";g.fillStyle="#cfe0ee";g.font="13px 'DM Mono',monospace";g.fillText(t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),W-14,TOP/2);g.textAlign="left";
- if(fires.length){g.textAlign="right";g.fillStyle="#ffab2b";g.font="bold 12px 'Segoe UI',Arial";g.fillText("🔥 "+fires.length+" active — Mohit responding",W-96,TOP/2);g.textAlign="left";}
+ let _rx=W-92;
+ if(typeof GAME!=="undefined"&&!GAME.active){ g.font="bold 12px 'Segoe UI',Arial"; const _lbl="🎮 Help Mohit"; const _pw=g.measureText(_lbl).width+18,_px=_rx-_pw,_py=TOP/2-9,_ph=18;
+   g.fillStyle="#e23b0e";rrp(_px,_py,_pw,_ph,9);g.fill();g.strokeStyle="#ffd23b";g.lineWidth=1.5;rrp(_px,_py,_pw,_ph,9);g.stroke();
+   g.fillStyle="#fff";g.textAlign="left";g.textBaseline="middle";g.fillText(_lbl,_px+9,TOP/2+1);
+   hhHelpRect={x:_px,y:_py,w:_pw,h:_ph}; _rx=_px-12; } else { hhHelpRect=null; }
+ if(fires.length){g.textAlign="right";g.fillStyle="#ffab2b";g.font="bold 12px 'Segoe UI',Arial";g.fillText("🔥 "+fires.length+" active — Mohit responding",_rx,TOP/2);g.textAlign="left";}
  requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 /* ================= HELPING HANDS GAME SHOW ================= */
-const GAME={active:false,phase:'off',name:'',duration:45,timeLeft:45,firesOut:0,hardOut:0,score:0,bonus:0,popups:[]};
+const GAME={active:false,phase:'off',name:'',duration:15,timeLeft:15,firesOut:0,hardOut:0,score:0,bonus:0,popups:[]};
+let hhHelpRect=null;
 const HH_PHRASES=["Amazing!","Great Job!","That was fast!","Keep Going!","Blazing! 🔥","Boom! 💥","Lightning! ⚡","You're a Hero!"];
 const HH_BLOCK=["fuck","shit","bitch","cunt","dick","cock","pussy","asshole","bastard","slut","whore","fag","nigg","retard","rape","nazi","hitler","penis","vagina","boob","porn","piss","douche","wank","jizz","twat","prick","bollock","kkk","spic","chink","kike","coon","dyke","tranny","hoe","damn"];
 function hhEl(id){return document.getElementById(id);}
@@ -424,7 +427,7 @@ function hhValidate(){ const v=hhEl('hhName').value.trim(),b=hhEl('hhGoBtn'),e=h
 function hhGo(){ const v=hhEl('hhName').value.trim(); if(hhBadName(v))return; GAME.name=v.slice(0,18); hhCloseModal(); hhStart(); }
 function hhStart(){ hhCloseModal(); GAME.active=true; GAME.phase='playing'; GAME.timeLeft=GAME.duration; GAME.firesOut=0; GAME.hardOut=0; GAME.score=0; GAME.bonus=0; GAME.popups=[];
  fires.length=0; fireTimer=0; for(let i=0;i<5;i++) spawnFire();
- document.body.classList.add('hhmode'); hhEl('hhHud').style.display='block'; hhEl('hhBorder').style.display='block'; hhEl('hhStart').style.display='none'; hhEl('hhCtl').style.display='flex';
+ document.body.classList.add('hhmode'); hhEl('hhHud').style.display='block'; hhEl('hhBorder').style.display='block'; hhEl('hhCtl').style.display='flex';
  hhEl('hhScoreVal').textContent='0'; hhEl('hhTimer').classList.remove('hhred'); hhEl('hhTimerVal').textContent=GAME.duration.toFixed(1); }
 function hhTick(dt){ if(!GAME.active||GAME.phase!=='playing')return; GAME.timeLeft-=dt; const s=Math.max(0,GAME.timeLeft);
  const tv=hhEl('hhTimerVal'),tEl=hhEl('hhTimer'); if(tv)tv.textContent=s.toFixed(1);
@@ -459,11 +462,17 @@ function hhLeaderboard(){ const board=hhLoad();
  +'<div class="hhbtnrow"><button class="hhbtn" onclick="hhOpen()">Play</button>'
  +'<button class="hhbtn hhalt" onclick="hhExit()">Close</button></div>'); }
 function hhExit(){ GAME.active=false; GAME.phase='off'; fires.length=0; fireTimer=2; hhCloseModal();
- document.body.classList.remove('hhmode'); hhEl('hhHud').style.display='none'; hhEl('hhBorder').style.display='none'; hhEl('hhCtl').style.display='none'; hhEl('hhStart').style.display='block'; }
-cv.addEventListener('click',function(e){ if(!GAME.active||GAME.phase!=='playing')return;
+ document.body.classList.remove('hhmode'); hhEl('hhHud').style.display='none'; hhEl('hhBorder').style.display='none'; hhEl('hhCtl').style.display='none'; }
+cv.addEventListener('click',function(e){
  const rect=cv.getBoundingClientRect(),mx=(e.clientX-rect.left)*(W/rect.width),my=(e.clientY-rect.top)*(H/rect.height);
+ if(!GAME.active){ if(hhHelpRect&&mx>=hhHelpRect.x&&mx<=hhHelpRect.x+hhHelpRect.w&&my>=hhHelpRect.y&&my<=hhHelpRect.y+hhHelpRect.h) hhOpen(); return; }
+ if(GAME.phase!=='playing')return;
  for(let i=fires.length-1;i>=0;i--){ const f=fires[i]; if(f.state!=="burning")continue; const s=f.size||1;
    if(Math.abs(f.x-mx)<15*s && my>f.y-42*s && my<f.y+9){ clickFire(f); break; } } });
+cv.addEventListener('mousemove',function(e){
+ if(GAME.active){ cv.style.cursor=(GAME.phase==='playing')?'crosshair':'default'; return; }
+ const rect=cv.getBoundingClientRect(),mx=(e.clientX-rect.left)*(W/rect.width),my=(e.clientY-rect.top)*(H/rect.height);
+ cv.style.cursor=(hhHelpRect&&mx>=hhHelpRect.x&&mx<=hhHelpRect.x+hhHelpRect.w&&my>=hhHelpRect.y&&my<=hhHelpRect.y+hhHelpRect.h)?'pointer':'default'; });
 function whatsLatest(){var b=document.getElementById('latestBtn'),s=document.getElementById('latestSub');
  b.disabled=true;s.textContent='team is preparing their reporting…';
  fetch('latest_activity.json?t='+Date.now()).then(function(r){return r.json();}).then(function(act){
