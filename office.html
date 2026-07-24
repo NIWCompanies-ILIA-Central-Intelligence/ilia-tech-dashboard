@@ -9,8 +9,67 @@ canvas{width:100%;max-width:1460px;height:auto;border-radius:12px;box-shadow:0 2
 #latestBtn:hover{background:#005c94;}#latestBtn:disabled{opacity:.7;cursor:default;}
 #latestSub{color:#0d1f2d;font-size:12px;font-weight:700;font-family:'DM Mono',monospace;background:#e7f7ec;padding:5px 11px;border-radius:14px;box-shadow:0 3px 10px rgba(0,0,0,.2);}
 #latestSub:empty{display:none;}
+/* ===== Helping Hands Game Show ===== */
+#hhStart{position:fixed;top:9px;left:50%;transform:translateX(-50%);z-index:120;background:linear-gradient(180deg,#ff8a3c,#e23b0e);color:#fff;border:2px solid #ffd23b;border-radius:22px;padding:8px 18px;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(226,59,14,.5);font-family:inherit;letter-spacing:.02em;animation:hhpulse 1.8s ease-in-out infinite;}
+#hhStart:hover{filter:brightness(1.08);}
+@keyframes hhpulse{0%,100%{box-shadow:0 4px 16px rgba(226,59,14,.5);}50%{box-shadow:0 4px 26px rgba(255,180,40,.85);}}
+body.hhmode #latestbar,body.hhmode #hint{display:none;}
+/* border marquee lights */
+#hhBorder{position:fixed;inset:0;pointer-events:none;z-index:110;display:none;box-shadow:inset 0 0 70px rgba(255,170,40,.28);}
+#hhBorder .hhb{position:absolute;}
+.hhb.t,.hhb.b{left:0;right:0;height:16px;background-image:radial-gradient(circle at 11px 8px,#ffd23b 3.4px,rgba(255,210,59,.15) 4px,transparent 5px);background-size:22px 16px;animation:hhchaseH 1.1s linear infinite;}
+.hhb.l,.hhb.r{top:0;bottom:0;width:16px;background-image:radial-gradient(circle at 8px 11px,#ff6a3c 3.4px,rgba(255,106,60,.15) 4px,transparent 5px);background-size:16px 22px;animation:hhchaseV 1.1s linear infinite;}
+.hhb.t{top:0}.hhb.b{bottom:0;animation-direction:reverse;}.hhb.l{left:0}.hhb.r{right:0;animation-direction:reverse;}
+@keyframes hhchaseH{to{background-position:22px 0}}
+@keyframes hhchaseV{to{background-position:0 22px}}
+/* HUD */
+#hhHud{display:none;position:fixed;top:8px;left:0;right:0;z-index:115;pointer-events:none;font-family:'Segoe UI',Arial;}
+#hhScore{position:absolute;left:20px;top:2px;background:#0d1f2d;border:2px solid #ffd23b;border-radius:12px;padding:6px 14px;color:#ffd23b;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.4);}
+#hhScore span{display:block;font-size:9px;letter-spacing:.14em;color:#f2b705;}
+#hhScore b{font-size:26px;color:#fff;line-height:1;font-variant-numeric:tabular-nums;}
+#hhGameName{position:absolute;left:50%;top:6px;transform:translateX(-50%);font-size:22px;font-weight:900;letter-spacing:.08em;color:#ffd23b;text-shadow:0 2px 0 #b3560a,0 0 18px rgba(255,180,40,.6);font-family:Georgia,'Segoe UI',serif;white-space:nowrap;}
+#hhTimer{position:absolute;right:20px;top:2px;background:#0d1f2d;border:2px solid #ffd23b;border-radius:12px;padding:6px 16px;color:#fff;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.4);overflow:visible;}
+#hhTimer small{display:block;font-size:9px;letter-spacing:.14em;color:#f2b705;}
+#hhTimer #hhTimerVal{font-size:28px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;display:inline-block;}
+#hhTimer.hhred{border-color:#ff3b30;}
+#hhTimer.hhred #hhTimerVal{color:#ff3b30;animation:hhtick .5s ease-in-out infinite;}
+@keyframes hhtick{0%,100%{transform:scale(1);}50%{transform:scale(1.9);text-shadow:0 0 22px rgba(255,59,48,.9);}}
+/* controls */
+#hhCtl{display:none;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:116;gap:10px;}
+#hhCtl button{background:#0d1f2d;color:#ffd23b;border:1.5px solid #ffd23b;border-radius:16px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+#hhCtl button:hover{background:#12293c;}
+/* modal */
+#hhModal{display:none;position:fixed;inset:0;z-index:130;background:rgba(6,14,22,.72);align-items:center;justify-content:center;font-family:'Segoe UI',Arial;}
+#hhModal .hhcard{background:linear-gradient(180deg,#fff7e8,#ffe9c7);border:4px solid #ffd23b;border-radius:20px;max-width:440px;width:90%;padding:26px 26px 22px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 6px rgba(226,59,14,.35);}
+.hhshow{font-family:Georgia,'Segoe UI',serif;font-size:20px;font-weight:900;color:#b3560a;line-height:1.2;text-shadow:0 1px 0 #fff;}
+.hhshow .hhbig{display:inline-block;font-size:34px;color:#e23b0e;letter-spacing:.04em;margin:2px 0;text-shadow:0 2px 0 #ffd23b;}
+.hhdesc{color:#4a3420;font-size:14px;line-height:1.55;margin:14px 4px 16px;}
+.hhinput{width:80%;padding:11px 14px;font-size:16px;border:2px solid #e0a94b;border-radius:12px;text-align:center;outline:none;font-family:inherit;background:#fffdf8;}
+.hhinput:focus{border-color:#e23b0e;}
+.hherr{color:#c62828;font-size:12px;font-weight:700;min-height:16px;margin-top:8px;}
+.hhbtn{margin-top:14px;background:linear-gradient(180deg,#ff8a3c,#e23b0e);color:#fff;border:2px solid #ffd23b;border-radius:24px;padding:11px 26px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(226,59,14,.45);}
+.hhbtn:hover{filter:brightness(1.08);}
+.hhbtn:disabled{opacity:.45;cursor:default;filter:none;}
+.hhbtn.hhalt{background:linear-gradient(180deg,#5b7fa8,#31517a);}
+.hhbtnrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.hhmini{margin-top:14px;color:#8a6b3a;font-size:12px;text-decoration:underline;cursor:pointer;}
+.hhmini:hover{color:#e23b0e;}
+.hhscore{background:#fffdf6;border:1.5px solid #e6c98a;border-radius:12px;padding:8px 14px;margin:14px 0 4px;text-align:left;}
+.hhscore.hhlb{max-height:280px;overflow-y:auto;}
+.hhrow{display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px dashed #ecdcb8;font-size:13.5px;color:#4a3420;}
+.hhrow:last-child{border-bottom:none;}
+.hhrow b{color:#0d1f2d;font-size:15px;}
+.hhrow.hhtot{border-top:2px solid #e0a94b;margin-top:2px;padding-top:8px;}
+.hhrow.hhtot span{font-weight:800;color:#b3560a;}
+.hhrow.hhtot b{font-size:22px;color:#e23b0e;}
+.hhrank{margin-top:10px;font-weight:800;color:#b3560a;font-size:15px;}
 </style></head><body><div id="wrap"><canvas id="c" width="1460" height="720"></canvas></div>
 <div id="latestbar"><span id="latestSub"></span><button id="latestBtn" onclick="whatsLatest()">🗞️ What's the latest?</button></div>
+<button id="hhStart" onclick="hhOpen()">🔥 Help put out the fires!</button>
+<div id="hhBorder"><i class="hhb t"></i><i class="hhb b"></i><i class="hhb l"></i><i class="hhb r"></i></div>
+<div id="hhHud"><div id="hhScore"><span>FIRES PUT OUT</span><b id="hhScoreVal">0</b></div><div id="hhGameName">★ HELPING HANDS ★</div><div id="hhTimer"><span id="hhTimerVal">45.0</span><small>SECONDS</small></div></div>
+<div id="hhCtl"><button onclick="hhLeaderboard()">🏆 Leaderboard</button><button onclick="hhExit()">Exit game</button></div>
+<div id="hhModal"></div>
 <div id="hint">CIH HQ — agents in-office · people roam (A* pathfinding, no walking through walls/furniture) 🏢</div>
 <script>
 const cv=document.getElementById('c'),g=cv.getContext('2d');
@@ -253,35 +312,45 @@ function drawWalls(){ const T=8;
 function doorSign(r){g.font="bold 12px 'Segoe UI',Arial";const tw=g.measureText(r.s).width,w=tw+14,y=(r.side==="full")?(IY0+6):((r.side==="top")?CT-12:CB+4),x=(r.side==="full")?(r.x+r.w/2-w/2):(r.doorX-w/2);
  g.fillStyle="rgba(0,0,0,.2)";rrp(x+1,y+1,w,16,5);g.fill();g.fillStyle=r.a;rrp(x,y,w,16,5);g.fill();g.fillStyle="#fff";g.textBaseline="middle";g.textAlign="left";g.fillText(r.s,x+7,y+9);}
 // ---------------- FIRE + FIRE MARSHAL (only Mohit responds) ----------------
-const fires=[]; const MAX_FIRES=5; let fireTimer=2+R()*4;
+const fires=[]; let fireTimer=2+R()*4;
 function randBuildingCell(){ for(let i=0;i<90;i++){ const c=1+ri(COLS-2), r=Math.floor(IY0/CELL)+ri(Math.floor((IY1-IY0)/CELL)); if(free(c,r)) return [c,r]; } return null; }
-function spawnFire(){ if(fires.length>=MAX_FIRES) return; const cell=randBuildingCell(); if(!cell) return;
+function spawnFire(){ const max=(typeof GAME!=="undefined"&&GAME.active)?15:5; if(fires.length>=max) return; const cell=randBuildingCell(); if(!cell) return;
  if(fires.some(f=>f.cell[0]===cell[0]&&f.cell[1]===cell[1])) return; const p=cc(cell[0],cell[1]);
- fires.push({x:p.x,y:p.y,cell,t:R()*3,state:"burning",dousing:0,outT:0}); }
+ let size=1,hue=1,smoke=false,clicksReq=1;
+ if(typeof GAME!=="undefined"&&GAME.active){ size=0.5+R()*2.5; hue=ri(3); smoke=R()<0.3; clicksReq=(R()<0.7)?1:(2+ri(4)); }
+ fires.push({x:p.x,y:p.y,cell,t:R()*3,state:"burning",dousing:0,outT:0,size,hue,smoke,clicksReq,clicks:0,lastClick:0,fastSum:0}); }
 function handleFire(dt){ fireTimer-=dt;
- if(fireTimer<=0){ fireTimer=4+R()*9; if(R()<0.9) spawnFire(); if(R()<0.18) spawnFire(); }
+ if(typeof GAME!=="undefined"&&GAME.active){
+   let guard=0; while(fires.filter(f=>f.state==="burning").length<5&&guard++<20){ const before=fires.length; spawnFire(); if(fires.length===before) break; }
+   if(fireTimer<=0){ fireTimer=0.5+R()*1.1; spawnFire(); if(R()<0.5) spawnFire(); }
+ } else if(fireTimer<=0){ fireTimer=4+R()*9; if(R()<0.9) spawnFire(); if(R()<0.18) spawnFire(); }
  for(let i=fires.length-1;i>=0;i--){ const f=fires[i]; f.t+=dt; if(f.state==="out"){ f.outT+=dt; if(f.outT>0.7) fires.splice(i,1); } } }
 function mohitFight(ch,dt){
  if(ch.target && ch.target.state!=="burning"){ ch.target=null; ch.spraying=false; ch.spray=0; }
  if(!ch.target){ let best=null,bd=1e9; for(const f of fires){ if(f.state!=="burning")continue; const d=Math.hypot(f.x-ch.x,f.y-ch.y); if(d<bd){bd=d;best=f;} }
    if(best){ ch.target=best; const [sc,sr]=cellOf(ch.x,ch.y); const path=astar(sc,sr,best.cell[0],best.cell[1],null); ch.path=path?path.map(([c,r])=>cc(c,r)):[]; ch.bub="🔥 on it!"; ch.bubT=1.6; } }
  if(ch.target){ const d=Math.hypot(ch.target.x-ch.x,ch.target.y-ch.y);
+   const _g=(typeof GAME!=="undefined"&&GAME.active); const _dspeed=_g?0.45:1.6, _mspeed=_g?165:72;
    if(d<26){ ch.moving=false; ch.spraying=true; ch.path=[]; ch.dir=ch.target.x>=ch.x?1:-1; ch.spray=(ch.spray||0)+dt; ch.target.dousing+=dt;
-     if(ch.target.dousing>1.6){ ch.target.state="out"; ch.bub="got it 🧯"; ch.bubT=1.8; ch.spraying=false; ch.target=null; } }
+     if(ch.target.dousing>_dspeed){ ch.target.state="out"; ch.bub=_g?"beat ya! 🧯":"got it 🧯"; ch.bubT=1.4; ch.spraying=false; ch.target=null; } }
    else if(ch.path.length){ ch.spraying=false; const p=ch.path[0],dx=p.x-ch.x,dy=p.y-ch.y,dd=Math.hypot(dx,dy);
-     if(dd<2){ch.path.shift();} else{ ch.moving=true; const sp=Math.min(dd,72*dt); ch.x+=dx/dd*sp; ch.y+=dy/dd*sp; if(Math.abs(dx)>.4)ch.dir=dx>0?1:-1; } }
+     if(dd<2){ch.path.shift();} else{ ch.moving=true; const sp=Math.min(dd,_mspeed*dt); ch.x+=dx/dd*sp; ch.y+=dy/dd*sp; if(Math.abs(dx)>.4)ch.dir=dx>0?1:-1; } }
    else { ch.spraying=false; const [sc,sr]=cellOf(ch.x,ch.y); const path=astar(sc,sr,ch.target.cell[0],ch.target.cell[1],null); ch.path=path?path.map(([c,r])=>cc(c,r)):[]; if(!path)ch.target=null; } } }
 function flameShape(x,baseY,w,h){ g.beginPath(); g.moveTo(x-w,baseY);
  g.bezierCurveTo(x-w,baseY-h*0.6,x-w*0.4,baseY-h*0.8,x-w*0.15,baseY-h);
  g.bezierCurveTo(x,baseY-h*1.12,x,baseY-h*1.12,x+w*0.15,baseY-h);
  g.bezierCurveTo(x+w*0.4,baseY-h*0.8,x+w,baseY-h*0.6,x+w,baseY);
  g.quadraticCurveTo(x,baseY+5,x-w,baseY); g.closePath(); g.fill(); }
-function drawFire(f){ const x=Math.round(f.x),y=Math.round(f.y); const flick=(Math.sin(f.t*17)+Math.sin(f.t*6.7))*1.4;
- g.save(); const gl=g.createRadialGradient(x,y-6,2,x,y-6,28); gl.addColorStop(0,"rgba(255,150,40,.5)"); gl.addColorStop(1,"rgba(255,110,0,0)"); g.fillStyle=gl; g.beginPath(); g.arc(x,y-6,28,0,7); g.fill();
- if(f.state==="out"){ g.globalAlpha=Math.max(0,.55-f.outT); g.fillStyle="#9aa4ad"; g.beginPath(); g.arc(x,y-14-f.outT*12,11,0,7); g.fill(); g.globalAlpha=1; g.restore();
-   g.fillStyle="rgba(90,90,90,.3)"; g.beginPath(); g.ellipse(x,y+2,8,3,0,0,7); g.fill(); return; }
- const h=15+flick; g.fillStyle="#ff6a12"; flameShape(x,y,10,h+8); g.fillStyle="#ffab2b"; flameShape(x,y-1,6.5,h); g.fillStyle="#ffe680"; flameShape(x,y-2,3.5,h-6);
- g.restore(); g.fillStyle="rgba(120,40,0,.35)"; g.beginPath(); g.ellipse(x,y+2,9,3,0,0,7); g.fill(); }
+function drawFire(f){ const s=f.size||1; const x=Math.round(f.x),y=Math.round(f.y); const flick=(Math.sin(f.t*17)+Math.sin(f.t*6.7))*1.4;
+ const cols=f.hue===0?["#e23b0e","#ff6a12","#ffcf5e"]:(f.hue===2?["#ff9a1f","#ffd23b","#fff2a8"]:["#ff6a12","#ffab2b","#ffe680"]);
+ g.save(); const gl=g.createRadialGradient(x,y-6*s,2,x,y-6*s,28*s); gl.addColorStop(0,"rgba(255,150,40,.5)"); gl.addColorStop(1,"rgba(255,110,0,0)"); g.fillStyle=gl; g.beginPath(); g.arc(x,y-6*s,28*s,0,7); g.fill();
+ if(f.state==="out"){ g.globalAlpha=Math.max(0,.55-f.outT); g.fillStyle="#9aa4ad"; g.beginPath(); g.arc(x,y-14-f.outT*12,11*s,0,7); g.fill(); g.globalAlpha=1; g.restore();
+   g.fillStyle="rgba(90,90,90,.3)"; g.beginPath(); g.ellipse(x,y+2,8*s,3*s,0,0,7); g.fill(); return; }
+ if(f.smoke){ for(let i=0;i<3;i++){ const pt=((f.t*0.55)+i*0.34)%1; g.globalAlpha=(1-pt)*0.32; g.fillStyle="#8a8f96"; g.beginPath(); g.arc(x+Math.sin((f.t+i)*2)*4*s,y-(20*s)-pt*32*s,(3+pt*6)*s,0,7); g.fill(); } g.globalAlpha=1; }
+ const h=(15+flick)*s; g.fillStyle=cols[0]; flameShape(x,y,10*s,h+8*s); g.fillStyle=cols[1]; flameShape(x,y-1,6.5*s,h); g.fillStyle=cols[2]; flameShape(x,y-2,3.5*s,h-6*s);
+ g.restore(); g.fillStyle="rgba(120,40,0,.35)"; g.beginPath(); g.ellipse(x,y+2,9*s,3*s,0,0,7); g.fill();
+ if(typeof GAME!=="undefined"&&GAME.active&&f.clicksReq>1){ const n=f.clicksReq,rem=n-f.clicks,py=Math.round(y-h-13*s); const startX=x-(n*7-3)/2;
+   for(let i=0;i<n;i++){ g.beginPath(); g.arc(startX+i*7+2,py,2.6,0,7); g.fillStyle=i<rem?"#ffe066":"#5b6b7a"; g.fill(); g.lineWidth=1; g.strokeStyle="#0d1f2d"; g.stroke(); } } }
 function drawSpray(ch){ const x=Math.round(ch.x),y=Math.round(ch.y),f=ch.dir;
  g.fillStyle="#c62828"; g.fillRect(x+(f>0?6:-11),y-19,5,11); g.fillStyle="#7a1616"; g.fillRect(x+(f>0?6:-11),y-19,5,2);
  const nx=x+(f>0?12:-12),ny=y-16;
@@ -290,7 +359,7 @@ function drawSpray(ch){ const x=Math.round(ch.x),y=Math.round(ch.y),f=ch.dir;
 // ---------------- LOOP ----------------
 let last=performance.now();
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
- handleFire(dt); const anyBurning=fires.some(f=>f.state==="burning");
+ handleFire(dt); if(typeof hhTick==="function") hhTick(dt); const anyBurning=fires.some(f=>f.state==="burning");
  for(const ch of chars){ch.t+=dt;
   if(ch.firefighter){ if(anyBurning){ mohitFight(ch,dt); if(ch.bubT>0)ch.bubT-=dt; continue; } else { ch.spraying=false; ch.target=null; } }
   if(ch.wait>0){ch.wait-=dt;ch.moving=false;}
@@ -312,6 +381,12 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  const draws=[]; for(const o of furn) draws.push({y:o.baseY,f:()=>drawFurn(o)}); for(const ch of chars) draws.push({y:ch.y,f:()=>drawChar(ch)});
  for(const f of fires) draws.push({y:f.y+1,f:()=>drawFire(f)});
  draws.sort((a,b)=>a.y-b.y); for(const d of draws) d.f();
+ // comic-book popups (game mode)
+ if(typeof GAME!=="undefined"&&GAME.popups&&GAME.popups.length){ g.textAlign="center"; g.textBaseline="middle"; g.font="900 22px 'Segoe UI',Arial";
+  for(let i=GAME.popups.length-1;i>=0;i--){ const p=GAME.popups[i]; p.t+=dt; const a=Math.max(0,1-p.t/1.2); const yy=p.y-p.t*40; const sc=1+Math.min(0.6,p.t*1.4);
+   g.save(); g.globalAlpha=a; g.translate(p.x,yy); g.rotate(p.rot||0); g.scale(sc,sc); g.lineJoin="round"; g.lineWidth=5; g.strokeStyle="#0d1f2d"; g.strokeText(p.text,0,0); g.fillStyle="#ffd23b"; g.fillText(p.text,0,0); g.restore();
+   if(p.t>1.2) GAME.popups.splice(i,1); }
+  g.textAlign="left"; g.textBaseline="alphabetic"; g.globalAlpha=1; }
  // title
  g.fillStyle="#0d1f2d";g.fillRect(0,0,W,TOP);g.fillStyle="#fff";g.font="bold 18px 'Segoe UI',Arial";g.textBaseline="middle";g.textAlign="left";g.fillText("🏢  CIH Headquarters",14,TOP/2);
  g.font="12px 'DM Mono',monospace";g.fillStyle="#8fb5d6";g.fillText("agents in-office · NIW + Simplicity roaming",214,TOP/2+1);
@@ -319,6 +394,76 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(fires.length){g.textAlign="right";g.fillStyle="#ffab2b";g.font="bold 12px 'Segoe UI',Arial";g.fillText("🔥 "+fires.length+" active — Mohit responding",W-96,TOP/2);g.textAlign="left";}
  requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
+/* ================= HELPING HANDS GAME SHOW ================= */
+const GAME={active:false,phase:'off',name:'',duration:45,timeLeft:45,firesOut:0,hardOut:0,score:0,bonus:0,popups:[]};
+const HH_PHRASES=["Amazing!","Great Job!","That was fast!","Keep Going!","Blazing! 🔥","Boom! 💥","Lightning! ⚡","You're a Hero!"];
+const HH_BLOCK=["fuck","shit","bitch","cunt","dick","cock","pussy","asshole","bastard","slut","whore","fag","nigg","retard","rape","nazi","hitler","penis","vagina","boob","porn","piss","douche","wank","jizz","twat","prick","bollock","kkk","spic","chink","kike","coon","dyke","tranny","hoe","damn"];
+function hhEl(id){return document.getElementById(id);}
+function hhEsc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function hhBadName(n){n=(n||'').toLowerCase().replace(/[^a-z0-9]/g,'');if(!n)return true;const l=n.replace(/0/g,'o').replace(/1/g,'i').replace(/3/g,'e').replace(/4/g,'a').replace(/5/g,'s').replace(/7/g,'t').replace(/@/g,'a');return HH_BLOCK.some(w=>n.includes(w)||l.includes(w));}
+function hhLoad(){try{return JSON.parse(localStorage.getItem('cih_hh_scores')||'[]');}catch(e){return [];}}
+function hhSave(b){try{localStorage.setItem('cih_hh_scores',JSON.stringify(b));}catch(e){}}
+function hhModal(html){const m=hhEl('hhModal');m.innerHTML='<div class="hhcard">'+html+'</div>';m.style.display='flex';}
+function hhCloseModal(){hhEl('hhModal').style.display='none';}
+function hhOpen(){ GAME.phase='welcome'; hhCloseModal();
+ hhModal('<div class="hhshow">Welcome to the<br><span class="hhbig">HELPING HANDS</span><br>GAME SHOW!</div>'
+ +'<p class="hhdesc">You’ve offered to help with the current <b>FIRE</b> situation — much appreciated! 🔥<br><br>'
+ +'The goal is simple: help <b>Mohit</b> put out as many fires as you can. All you have to do is <b>click a fire</b> to put it out.</p>'
+ +'<button class="hhbtn" onclick="hhReady()">I’m Ready</button>'
+ +'<div class="hhmini" onclick="hhExit()">no thanks, maybe later</div>'); }
+function hhReady(){ GAME.phase='name';
+ hhModal('<div class="hhshow">We’re excited for your help!</div>'
+ +'<p class="hhdesc">We’d love to know your name:</p>'
+ +'<input id="hhName" class="hhinput" maxlength="18" placeholder="Your name" autocomplete="off" oninput="hhValidate()" onkeydown="if(event.key===\'Enter\')hhGo()">'
+ +'<div id="hhNameErr" class="hherr"></div>'
+ +'<button id="hhGoBtn" class="hhbtn" disabled onclick="hhGo()">Let’s Go!</button>');
+ setTimeout(function(){var el=hhEl('hhName');if(el)el.focus();},60); }
+function hhValidate(){ const v=hhEl('hhName').value.trim(),b=hhEl('hhGoBtn'),e=hhEl('hhNameErr');
+ if(!v){b.disabled=true;e.textContent='';return;}
+ if(hhBadName(v)){b.disabled=true;e.textContent="Let’s keep it friendly — try another name.";}else{b.disabled=false;e.textContent='';} }
+function hhGo(){ const v=hhEl('hhName').value.trim(); if(hhBadName(v))return; GAME.name=v.slice(0,18); hhCloseModal(); hhStart(); }
+function hhStart(){ hhCloseModal(); GAME.active=true; GAME.phase='playing'; GAME.timeLeft=GAME.duration; GAME.firesOut=0; GAME.hardOut=0; GAME.score=0; GAME.bonus=0; GAME.popups=[];
+ fires.length=0; fireTimer=0; for(let i=0;i<5;i++) spawnFire();
+ document.body.classList.add('hhmode'); hhEl('hhHud').style.display='block'; hhEl('hhBorder').style.display='block'; hhEl('hhStart').style.display='none'; hhEl('hhCtl').style.display='flex';
+ hhEl('hhScoreVal').textContent='0'; hhEl('hhTimer').classList.remove('hhred'); hhEl('hhTimerVal').textContent=GAME.duration.toFixed(1); }
+function hhTick(dt){ if(!GAME.active||GAME.phase!=='playing')return; GAME.timeLeft-=dt; const s=Math.max(0,GAME.timeLeft);
+ const tv=hhEl('hhTimerVal'),tEl=hhEl('hhTimer'); if(tv)tv.textContent=s.toFixed(1);
+ if(tEl){ if(s<=3)tEl.classList.add('hhred'); else tEl.classList.remove('hhred'); }
+ if(GAME.timeLeft<=0){ GAME.timeLeft=0; hhEnd(); } }
+function clickFire(f){ const now=performance.now(); const gap=f.clicks>0?(now-f.lastClick)/1000:999; f.lastClick=now; f.clicks++;
+ if(f.clicks>1&&gap<0.28) f.fastSum+=0.5;
+ if(f.clicks>=f.clicksReq){ f.state="out"; f.outT=0; GAME.firesOut++; GAME.score+=1+f.clicksReq; if(f.clicksReq>=3)GAME.hardOut++;
+   if(f.clicksReq>1&&f.fastSum>0){ GAME.bonus+=f.fastSum; GAME.score+=f.fastSum; comic(f); }
+   else if(f.clicksReq===1&&gap<0.5){ if(R()<0.22) comic(f); }
+   hhEl('hhScoreVal').textContent=GAME.firesOut; }
+ else { f.size=Math.max(0.45,(f.size||1)*0.88); } }
+function comic(f){ GAME.popups.push({text:HH_PHRASES[ri(HH_PHRASES.length)],x:f.x,y:f.y-24*(f.size||1),t:0,rot:(R()-0.5)*0.24}); }
+function hhEnd(){ GAME.active=false; GAME.phase='over';
+ const rec={name:GAME.name,score:Math.round(GAME.score*10)/10,fires:GAME.firesOut,hard:GAME.hardOut,bonus:Math.round(GAME.bonus*10)/10,date:new Date().toISOString()};
+ const board=hhLoad(); board.push(rec); board.sort((a,b)=>b.score-a.score); const top=board.slice(0,100); hhSave(top); const rank=top.indexOf(rec)+1;
+ fires.length=0; document.body.classList.remove('hhmode'); hhEl('hhHud').style.display='none'; hhEl('hhBorder').style.display='none'; hhEl('hhCtl').style.display='none';
+ hhModal('<div class="hhshow"><span class="hhbig">GAME OVER</span></div>'
+ +'<p class="hhdesc">Your bravery was noticed — thanks for your help, '+hhEsc(GAME.name)+'! 🧯</p>'
+ +'<div class="hhscore"><div class="hhrow"><span>Total Fires Put Out</span><b>'+GAME.firesOut+'</b></div>'
+ +'<div class="hhrow"><span>Difficult Fires (3–5 clicks)</span><b>'+GAME.hardOut+'</b></div>'
+ +'<div class="hhrow"><span>Efficiency Bonus</span><b>+'+rec.bonus.toFixed(1)+'</b></div>'
+ +'<div class="hhrow hhtot"><span>Final Score</span><b>'+rec.score.toFixed(1)+'</b></div></div>'
+ +'<div class="hhrank">'+(rank>0&&rank<=10?('🏆 High score #'+rank+'!'):('Ranked #'+(rank>0?rank:'—')))+'</div>'
+ +'<div class="hhbtnrow"><button class="hhbtn" onclick="hhStart()">Go Again</button>'
+ +'<button class="hhbtn hhalt" onclick="hhLeaderboard()">View High Scores</button></div>'
+ +'<div class="hhmini" onclick="hhExit()">Start as a new Helping Hands volunteer</div>'); }
+function hhLeaderboard(){ const board=hhLoad();
+ let rows=board.slice(0,15).map(function(r,i){return '<div class="hhrow"><span>'+(i+1)+'. '+hhEsc(r.name)+'</span><b>'+Number(r.score).toFixed(1)+'</b></div>';}).join('');
+ if(!rows)rows='<div class="hhdesc" style="margin:8px 0">No scores yet — be the first!</div>';
+ hhModal('<div class="hhshow">🏆 High Scores</div><div class="hhscore hhlb">'+rows+'</div>'
+ +'<div class="hhbtnrow"><button class="hhbtn" onclick="hhOpen()">Play</button>'
+ +'<button class="hhbtn hhalt" onclick="hhExit()">Close</button></div>'); }
+function hhExit(){ GAME.active=false; GAME.phase='off'; fires.length=0; fireTimer=2; hhCloseModal();
+ document.body.classList.remove('hhmode'); hhEl('hhHud').style.display='none'; hhEl('hhBorder').style.display='none'; hhEl('hhCtl').style.display='none'; hhEl('hhStart').style.display='block'; }
+cv.addEventListener('click',function(e){ if(!GAME.active||GAME.phase!=='playing')return;
+ const rect=cv.getBoundingClientRect(),mx=(e.clientX-rect.left)*(W/rect.width),my=(e.clientY-rect.top)*(H/rect.height);
+ for(let i=fires.length-1;i>=0;i--){ const f=fires[i]; if(f.state!=="burning")continue; const s=f.size||1;
+   if(Math.abs(f.x-mx)<15*s && my>f.y-42*s && my<f.y+9){ clickFire(f); break; } } });
 function whatsLatest(){var b=document.getElementById('latestBtn'),s=document.getElementById('latestSub');
  b.disabled=true;s.textContent='team is preparing their reporting…';
  fetch('latest_activity.json?t='+Date.now()).then(function(r){return r.json();}).then(function(act){
