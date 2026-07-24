@@ -43,7 +43,8 @@ body.hhmode #latestbar,body.hhmode #hint{display:none;}
 #hhModal .hhcard{background:linear-gradient(180deg,#fff7e8,#ffe9c7);border:4px solid #ffd23b;border-radius:20px;max-width:440px;width:90%;padding:26px 26px 22px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 6px rgba(226,59,14,.35);}
 .hhshow{font-family:Georgia,'Segoe UI',serif;font-size:20px;font-weight:900;color:#b3560a;line-height:1.2;text-shadow:0 1px 0 #fff;}
 .hhshow .hhbig{display:inline-block;font-size:34px;color:#e23b0e;letter-spacing:.04em;margin:2px 0;text-shadow:0 2px 0 #ffd23b;}
-.hhdesc{color:#4a3420;font-size:14px;line-height:1.55;margin:14px 4px 16px;}
+.hhdesc{color:#4a3420;font-size:14px;line-height:1.55;margin:14px 4px 12px;}
+.hhwarn{font-size:16.5px;font-weight:800;color:#e23b0e;line-height:1.4;margin:4px 6px 14px;text-shadow:0 1px 0 #fff;}
 .hhinput{width:80%;padding:11px 14px;font-size:16px;border:2px solid #e0a94b;border-radius:12px;text-align:center;outline:none;font-family:inherit;background:#fffdf8;}
 .hhinput:focus{border-color:#e23b0e;}
 .hherr{color:#c62828;font-size:12px;font-weight:700;min-height:16px;margin-top:8px;}
@@ -66,7 +67,7 @@ body.hhmode #latestbar,body.hhmode #hint{display:none;}
 </style></head><body><div id="wrap"><canvas id="c" width="1460" height="720"></canvas></div>
 <div id="latestbar"><span id="latestSub"></span><button id="latestBtn" onclick="whatsLatest()">🗞️ What's the latest?</button></div>
 <div id="hhBorder"><i class="hhb t"></i><i class="hhb b"></i><i class="hhb l"></i><i class="hhb r"></i></div>
-<div id="hhHud"><div id="hhScore"><span>FIRES PUT OUT</span><b id="hhScoreVal">0</b></div><div id="hhGameName">★ HELPING HANDS ★</div><div id="hhTimer"><span id="hhTimerVal">15.0</span><small>SECONDS</small></div></div>
+<div id="hhHud"><div id="hhScore"><span>FIRES PUT OUT</span><b id="hhScoreVal">0</b></div><div id="hhGameName">★ HELPING HANDS ★</div><div id="hhTimer"><span id="hhTimerVal">20.0</span><small>SECONDS</small></div></div>
 <div id="hhCtl"><button onclick="hhLeaderboard()">🏆 Leaderboard</button><button onclick="hhExit()">Exit game</button></div>
 <div id="hhModal"></div>
 <div id="hint">CIH HQ — agents in-office · people roam (A* pathfinding, no walking through walls/furniture) 🏢</div>
@@ -397,7 +398,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 /* ================= HELPING HANDS GAME SHOW ================= */
-const GAME={active:false,phase:'off',name:'',duration:15,timeLeft:15,firesOut:0,hardOut:0,score:0,bonus:0,popups:[]};
+const GAME={active:false,phase:'off',name:'',duration:20,timeLeft:20,firesOut:0,hardOut:0,score:0,bonus:0,popups:[]};
 let hhHelpRect=null;
 const HH_PHRASES=["Amazing!","Great Job!","That was fast!","Keep Going!","Blazing! 🔥","Boom! 💥","Lightning! ⚡","You're a Hero!"];
 const HH_BLOCK=["fuck","shit","bitch","cunt","dick","cock","pussy","asshole","bastard","slut","whore","fag","nigg","retard","rape","nazi","hitler","penis","vagina","boob","porn","piss","douche","wank","jizz","twat","prick","bollock","kkk","spic","chink","kike","coon","dyke","tranny","hoe","damn"];
@@ -406,13 +407,15 @@ function hhEsc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;'
 function hhBadName(n){n=(n||'').toLowerCase().replace(/[^a-z0-9]/g,'');if(!n)return true;const l=n.replace(/0/g,'o').replace(/1/g,'i').replace(/3/g,'e').replace(/4/g,'a').replace(/5/g,'s').replace(/7/g,'t').replace(/@/g,'a');return HH_BLOCK.some(w=>n.includes(w)||l.includes(w));}
 function hhLoad(){try{return JSON.parse(localStorage.getItem('cih_hh_scores')||'[]');}catch(e){return [];}}
 function hhSave(b){try{localStorage.setItem('cih_hh_scores',JSON.stringify(b));}catch(e){}}
-function hhModal(html){const m=hhEl('hhModal');m.innerHTML='<div class="hhcard">'+html+'</div>';m.style.display='flex';}
-function hhCloseModal(){hhEl('hhModal').style.display='none';}
-function hhOpen(){ GAME.phase='welcome'; hhCloseModal();
+function hhModal(html){const m=hhEl('hhModal');m.innerHTML='<div class="hhcard">'+html+'</div>';m.style.display='flex';hhEl('hhBorder').style.display='block';}
+function hhCloseModal(){hhEl('hhModal').style.display='none';if(!GAME.active)hhEl('hhBorder').style.display='none';}
+function hhOpen(){ GAME.phase='welcome';
  hhModal('<div class="hhshow">Welcome to the<br><span class="hhbig">HELPING HANDS</span><br>GAME SHOW!</div>'
  +'<p class="hhdesc">You’ve offered to help with the current <b>FIRE</b> situation — much appreciated! 🔥<br><br>'
  +'The goal is simple: help <b>Mohit</b> put out as many fires as you can. All you have to do is <b>click a fire</b> to put it out.</p>'
+ +'<p class="hhwarn">⚠️ Careful!!! Some fires require multiple clicks to extinguish!</p>'
  +'<button class="hhbtn" onclick="hhReady()">I’m Ready</button>'
+ +'<div class="hhmini" onclick="hhLeaderboard()">🏆 View High Scores</div>'
  +'<div class="hhmini" onclick="hhExit()">no thanks, maybe later</div>'); }
 function hhReady(){ GAME.phase='name';
  hhModal('<div class="hhshow">We’re excited for your help!</div>'
