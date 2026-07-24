@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-23",
+ "updated": "2026-07-24",
  "sample": false,
  "intro": "Dev-call intelligence - the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static - the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
@@ -60,24 +60,24 @@
  ],
  "latest_call": {
   "title": "Dev Meeting",
-  "date": "Thu - Jul 23, 2026",
+  "date": "Fri - Jul 24, 2026",
   "source": "via Gemini (Google Meet)",
-  "lede": "Documentation + data-cleanup call. Headlines: a trust-naming logic bug — automated numbering wrongly appended a number to trust names for single-policy clients — will be fixed by skipping the number on the first trust and numbering only from the second policy onward (folds into NIWD-1844); a document-workflow protocol was set to keep formal/historical documents separated from automated ILIA uploads, with a push to auto-generate per-tranche document folders instead of creating them by hand; missing illustrated surrender values and missing National Life carrier data (tranches 31 & 63) are being merged in; and system-import requirements are being updated for the new National Life allocation form and index selections. Systematic-allocation client outreach is being coordinated (with Todd, Marissa, and now Shounak) ahead of the Sept 26 form deadline, with an Alliance call being prepped.",
+  "lede": "Data-cleanup + workload-boundaries call. Headlines: an agent/admin client-list defect — clients with multiple policies show only one — will be fixed by giving each policy its own row plus a dedicated policy-number column; the Great Wealth Transfer needs a lookup so an invited family member who already holds a policy doesn't trigger duplicate invites and data cleanup; historical bank-loan (WinTrust) data shows per-account interest-rate discrepancies (roughly $30k on some accounts) that will be reconciled by auditing the source loan documents year-by-year and building a reconciliation formula; and the team set clear operational boundaries — non-technical support and sales feature-requests route to Operations/Todd and the UFC team, not tech staff, with servicing/inbox work offloaded and a system-integration list compiled for the AI build-out. Simsaw's single-point-of-contact capacity was flagged as a bottleneck; leadership will weigh a second contact. Annual reviews will be re-enabled once confirmed they won't fire automated client notices (SARS already re-enabled).",
   "channels": [
    {
     "label": "Inside ILIA",
     "color": "#0076BD",
     "items": [
      {
-      "text": "Trust naming fix: automated logic incorrectly appended a number to single-policy trust names; decision is to skip numbering on the first trust and apply it only from the second policy onward — implemented as a logic change on the existing trust-naming task.",
-      "task": "NIWD-1844"
-     },
-     {
-      "text": "Auto-generate document folders: build a process that creates per-tranche document folders automatically, eliminating manual folder creation.",
+      "text": "Agent client list — per-policy view: clients holding multiple policies currently show only one entry; standardize the agent/admin client list so every policy gets its own row plus a dedicated policy-number column.",
       "task": null
      },
      {
-      "text": "Segregate ILIA uploads: keep ILIA-upload folders separate from historical document folders within each tranche.",
+      "text": "GWT invitee lookup: add a check so the Great Wealth Transfer flags when an invited family member already holds a policy, preventing duplicate invite emails and cleanup — folded into the active GWT update work.",
+      "task": "NIWD-1889"
+     },
+     {
+      "text": "Backlog cleanup: hold a team session next week to realign responsibilities and clean up the ILIA task board with operations.",
       "task": null
      }
     ]
@@ -87,11 +87,7 @@
     "color": "#0891b2",
     "items": [
      {
-      "text": "New National Life allocation form: review the new form and confirm requirements for the upcoming product/import updates (allocation forms + index selections).",
-      "task": null
-     },
-     {
-      "text": "Alliance call prep: schedule a Lifelink pre-call and distribute meeting notes + code references to stakeholders beforehand.",
+      "text": "Simsaw capacity: dev vendor flagged as a bottleneck — one contact handles all communication plus heavy ad-hoc work; evaluate a second point of contact or added resources.",
       "task": null
      }
     ]
@@ -101,19 +97,19 @@
     "color": "#c47f0a",
     "items": [
      {
-      "text": "National Life missing data: review tranches 31 & 63 to identify missing carrier data and report findings from the provided file.",
+      "text": "Bank-loan interest-rate reconciliation (WinTrust): historical loan data shows per-account discrepancies (~$30k on some) from incorrect/blended interest rates; audit source loan documents year-by-year and build a reconciliation formula (theoretical until proofed).",
       "task": null
      },
      {
-      "text": "Illustrated surrender values: run a diagnostic report on the ISV task to verify the reported issues.",
-      "task": "NIWD-1753"
+      "text": "Annual reviews & notices: confirm whether re-enabling annual reviews triggers automated client notices before turning them back on; SARS re-enabled and considered fixed.",
+      "task": "NIWD-2019"
      },
      {
-      "text": "Non-ILIA policy docs: upload missing documents for policies not enrolled in ILIA and map ILIA uploads correctly to client folders.",
+      "text": "Illustrated values: investigate reported illustrated-value data problems surfacing in Domo.",
       "task": null
      },
      {
-      "text": "Missing-document audit: review tranche folders for missing amendments and delivery receipts to ensure all required forms are present.",
+      "text": "Workload handoff: move servicing, inbox, and non-urgent sales feedback from the tech team to operations/UFC; compile the list of required system integrations for the AI build-out to automate data extraction.",
       "task": null
      }
     ]
@@ -123,15 +119,15 @@
     "color": "#1d6b34",
     "items": [
      {
-      "text": "Trust auto-numbering skips the first (single) trust and numbers only from the second policy onward.",
+      "text": "Agent client list standardized: each policy is its own entry with a dedicated policy-number column.",
       "task": null
      },
      {
-      "text": "Formal/historical documents stay separated from automated ILIA uploads; ILIA uploads live in their own per-tranche folders.",
+      "text": "Non-technical support requests route to Operations/Todd, not the technical team.",
       "task": null
      },
      {
-      "text": "System imports will be updated for the new National Life allocation form and index selections.",
+      "text": "Call-routing protocol: administrative staff use informational guidelines to direct inquiries to Operations/Todd instead of technical staff.",
       "task": null
      }
     ]
@@ -139,6 +135,84 @@
   ]
  },
  "themes": [
+  {
+   "icon": "",
+   "name": "Agent Client List — Per-Policy View",
+   "badge": "Fixing",
+   "badgeclass": "b-amber",
+   "latest": "Agent/admin client list shows only one policy for clients holding several. Fix: give every policy its own entry and add a dedicated policy-number column, rather than grouping them under one client header.",
+   "task": null,
+   "meta": [
+    "Olivia / Shounak",
+    "Jul 24",
+    "to build"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Bank Loan Interest-Rate Reconciliation",
+   "badge": "Investigating",
+   "badgeclass": "b-amber",
+   "latest": "Historical bank-loan (WinTrust) data shows per-account discrepancies (~$30k on some) traced to incorrect/blended interest rates (e.g. a missing 7.5% rate). Plan: audit source loan documents year-by-year, determine correct rates, and build a formula to reconcile bank data against system records — theoretical until proofed.",
+   "task": null,
+   "meta": [
+    "Judy",
+    "Jul 24",
+    "auditing"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Workload Delegation & Operations Handoff",
+   "badge": "Decision",
+   "badgeclass": "b-blue",
+   "latest": "Servicing, inbox, and non-urgent sales feedback move from the tech team to the operations/UFC team to cut task volume. Non-technical support routes to Operations/Todd; sales feature-requests go to Judy. Shounak to help train the UFC team.",
+   "task": null,
+   "meta": [
+    "Olivia / Judy",
+    "Jul 24",
+    "aligned"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "AI Integrations for Servicing Automation",
+   "badge": "In progress",
+   "badgeclass": "b-teal",
+   "latest": "To reduce manual servicing load, compile the list of required system connections/integrations for the AI build-out to automate data extraction.",
+   "task": null,
+   "meta": [
+    "Olivia",
+    "Jul 24",
+    "scoping"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Simsaw Vendor Capacity",
+   "badge": "Needs input",
+   "badgeclass": "b-amber",
+   "latest": "Dev vendor Simsaw flagged as a bottleneck — one contact handles all communication plus significant ad-hoc work. Weighing a second point of contact or restructured comms; leadership to raise added resources with the vendor, though budget for new hires is uncertain.",
+   "task": null,
+   "meta": [
+    "Judy / Shounak",
+    "Jul 24",
+    "evaluating"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Illustrated Values Data (Domo)",
+   "badge": "Investigating",
+   "badgeclass": "b-amber",
+   "latest": "Reported data problems with illustrated values surfacing in Domo to be investigated.",
+   "task": null,
+   "meta": [
+    "Shounak",
+    "Jul 24",
+    "investigating"
+   ]
+  },
   {
    "icon": "",
    "name": "Trust Naming — Numbering Fix",
@@ -261,12 +335,12 @@
    "name": "Great Wealth Transfer Review",
    "badge": "In progress",
    "badgeclass": "b-grey",
-   "latest": "Judy and Jamin to review the Great Wealth Transfer process together before presenting it to leadership; review scheduled immediately after this call.",
+   "latest": "GWT review continuing. New this call: add a lookup so a client inviting a family member who already holds a policy doesn't trigger duplicate invite emails or data cleanup — folded into the active GWT update work.",
    "task": "NIWD-1889",
    "meta": [
-    "Jamin / Judy",
-    "Jul 22",
-    "reviewing"
+    "Jamin / Judy / Shounak",
+    "Jul 24",
+    "to build"
    ]
   },
   {
@@ -414,14 +488,14 @@
   },
   {
    "icon": "",
-   "name": "Missing Statements & Scraper Data Gaps",
+   "name": "Annual Reviews, Statements & Scraper Data",
    "badge": "Investigating",
    "badgeclass": "b-amber",
-   "latest": "Annual-review statement-data task under review; batch request to National Life and date-logic fix still in play. No update this call.",
+   "latest": "Annual-review data task under review. Before re-enabling annual reviews, confirming with the vendor that reactivation won't trigger automated client notices. SARS (suspicious-activity reports) re-enabled and considered fixed.",
    "task": "NIWD-2019",
    "meta": [
     "Shounak / Mohit",
-    "Jul 20",
+    "Jul 24",
     "updating"
    ]
   },
@@ -467,14 +541,14 @@
  ],
  "urgent": [
   {
-   "title": "Trust-naming numbering bug — skip numbering on the first/single trust (logic change on the trust-naming task)",
-   "who": "dev - Chris",
-   "task": "NIWD-1844"
+   "title": "Bank-loan reconciliation — per-account interest-rate discrepancies (~$30k on some); audit source loan documents and build a reconciliation formula",
+   "who": "data - Judy",
+   "task": null
   },
   {
-   "title": "Illustrated surrender values — run the diagnostic report on the ISV task today and verify the issues",
-   "who": "dev - Kyle",
-   "task": "NIWD-1753"
+   "title": "Agent client multi-policy display defect — clients with multiple policies show only one; standardize per-policy view + add a policy-number column",
+   "who": "dev",
+   "task": null
   },
   {
    "title": "Systematic-allocation client outreach — Sept 26 form deadline; coordinate outreach (Todd/Marissa/Shounak) + prep the Alliance call",
@@ -484,12 +558,16 @@
  ],
  "dev_tagged": [
   {
-   "task": "NIWD-1844",
-   "text": "Trust naming — modify numbering logic to skip the first trust and number only from the second policy onward."
+   "task": "NIWD-2019",
+   "text": "Annual review data (scraper) — confirm re-enabling annual reviews won't fire automated client notices before turning them on; SARS re-enabled."
   },
   {
-   "task": "NIWD-1753",
-   "text": "Illustrated surrender values — run a diagnostic report and verify the reported issues."
+   "task": "NIWD-1889",
+   "text": "GWT — add an invitee policy lookup to prevent duplicate invites/cleanup when an invited family member already holds a policy."
+  },
+  {
+   "task": "NIWD-1844",
+   "text": "Trust naming — modify numbering logic to skip the first trust and number only from the second policy onward."
   },
   {
    "task": "NIWD-2070",
@@ -545,55 +623,60 @@
   }
  ],
  "stats": {
-  "calls": 8,
-  "themes": 25,
+  "calls": 9,
+  "themes": 31,
   "urgent": 3,
-  "dev": 13,
+  "dev": 16,
   "blockers": 4,
   "pills": [
    {
-    "t": "Status Standardization",
-    "c": "b-blue"
-   },
-   {
-    "t": "Agent Offboarding",
-    "c": "b-purple"
-   },
-   {
-    "t": "NL DocuSign Certs",
-    "c": "b-blue"
-   },
-   {
-    "t": "Irrevocable Trust / Tranche B",
+    "t": "Per-Policy Client View",
     "c": "b-amber"
    },
    {
-    "t": "ePay Tranche Lock",
-    "c": "b-teal"
+    "t": "Bank Loan Reconciliation",
+    "c": "b-amber"
    },
    {
-    "t": "Close-Tranche Automation",
+    "t": "Ops Handoff / Support Routing",
+    "c": "b-blue"
+   },
+   {
+    "t": "GWT Invitee Lookup",
+    "c": "b-grey"
+   },
+   {
+    "t": "Simsaw Capacity",
+    "c": "b-amber"
+   },
+   {
+    "t": "Annual Reviews & Notices",
     "c": "b-teal"
    }
   ]
  },
  "new_projects": {
-  "updated": "2026-07-23",
+  "updated": "2026-07-24",
   "source": "CIH · mined from Gemini dev-call recaps",
   "last_call": {
-   "date": "2026-07-23",
-   "label": "Thu · Jul 23, 2026",
-   "count": 3,
+   "date": "2026-07-24",
+   "label": "Fri · Jul 24, 2026",
+   "count": 4,
    "items": [
-    "Trust naming: skip auto-numbering on single-policy (1st) trust; number only 2nd policy onward",
-    "Auto-generate per-tranche document folders; keep ILIA uploads separate from historical folders",
-    "Update system imports for the new National Life allocation form + index selections"
+    "Agent client list: show each policy as its own entry + add a policy-number column",
+    "GWT: lookup to flag invitees who already hold a policy (prevent duplicate invites)",
+    "Bank-loan interest-rate reconciliation formula (audit source loan documents by year)",
+    "Compile system-integration list for AI build-out to automate servicing data extraction"
    ]
   },
   "avg_per_call": 2.2,
-  "calls_analyzed": 16,
-  "total_raised": 99,
+  "calls_analyzed": 17,
+  "total_raised": 103,
   "pending": [
+   "Agent client list: show each policy as its own entry + add a policy-number column",
+   "GWT: lookup to flag invitees who already hold a policy (prevent duplicate invites)",
+   "Bank-loan interest-rate reconciliation formula (audit source loan documents by year)",
+   "Compile system-integration list for AI build-out to automate servicing data extraction",
    "Trust naming: skip auto-numbering on single-policy (1st) trust; number only 2nd policy onward",
    "Auto-generate per-tranche document folders; keep ILIA uploads separate from historical folders",
    "Update system imports for the new National Life allocation form + index selections",
@@ -632,6 +715,11 @@
    "Custom-illustration UI: save admin-input values (multi-step confirmation)"
   ],
   "history": [
+   {
+    "date": "2026-07-24",
+    "label": "Fri · Jul 24",
+    "count": 4
+   },
    {
     "date": "2026-07-23",
     "label": "Thu · Jul 23",
@@ -714,6 +802,6 @@
    }
   ],
   "pending_verified": true,
-  "corpus_count": 1761
+  "corpus_count": 1765
  }
 }
