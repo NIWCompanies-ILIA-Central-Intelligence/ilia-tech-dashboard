@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-27",
+ "updated": "2026-07-28",
  "sample": false,
  "intro": "Dev-call intelligence - the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static - the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
@@ -56,64 +56,86 @@
   {
    "t": "Carrier systematic-allocation-change form - pick a handling option and build the client/agent outreach",
    "pm": "Judy / Shounak"
+  },
+  {
+   "t": "Case-details checkbox to flag clients on systematic/monthly crediting (admin toggle; drives confirmation-statement processing)",
+   "pm": "Shounak / Mohit"
+  },
+  {
+   "t": "ILIA standard model - decide carrier-specific standardization vs. a single unified ILIA standard",
+   "pm": "Jamin / Judy / Shounak"
   }
  ],
  "latest_call": {
   "title": "Daily Sync / Dev Office Hours",
-  "date": "Mon - Jul 27, 2026",
+  "date": "Tue - Jul 28, 2026",
   "source": "via Gemini (Google Meet)",
-  "lede": "Daily sync + dev office hours. Status standardization is refining the ticketing model (NIWD-2070) while DBR / death-benefit-reduction data processing still needs clarification (NIWD-1771); front-end errors on the estimator wizard have paused progress pending dev review (NIWD-1999). The team prioritized manual annual-review cases, set new reporting metrics for application documentation, and is verifying data integrity for future quotes and the client-management views. Dashboard-sync errors and document-processing corrections are under investigation; the paper-application process is ready for development this sprint. Annual reviews are being re-enabled for policies turned off for manual data issues, once confirmed they won't fire automated client notices.",
+  "lede": "Daily sync + dev office hours. Three decisions landed: Confluence is the single centralized hub for infrastructure and project tracking, a Jira task is now required for all DocuSign work, and a new case-details checkbox will flag clients on systematic/monthly crediting (~155 affected; Shounak drafting specs, Mohit to run a targeted scraper). Jamin is finalizing the ILIA standard model - carrier-specific vs. a single unified standard - and launched the centralized ILIA Hub on Atlassian (pulls from Jira). The main open thread is carrier document delivery: required proposal, certificate of trust, and life-application supplement aren't reaching the carrier via ILIA and are handled by manual email today; Mohit is investigating folding them into the DocuSign envelope while the team confirms exact needs. Document-display bugs (NIWD-2128/2129/2130) and the historical-document import (NIWD-1626) are in progress; Domo annual reports and DocuSign data-label population were resolved.",
   "channels": [
    {
-    "label": "Status & data",
+    "label": "Inside ILIA",
     "color": "#0076BD",
     "items": [
      {
-      "text": "Status standardization across ILIA — refine the guiding-star ticket so statuses stay consistent across screens.",
-      "task": "NIWD-2070"
+      "text": "Systematic / monthly-crediting checkbox - add a case-details checkbox so admins can flag clients on systematic or monthly crediting; the toggle drives confirmation-statement processing (~155 users affected; targeted scraper requested).",
+      "task": null
      },
      {
-      "text": "DBR (death-benefit-reduction) data load still needs clarification; Jamin + Kyle to make movement.",
-      "task": "NIWD-1771"
+      "text": "ILIA standard model - Jamin finalizing; decision pending on carrier-specific standardizations vs. a single unified ILIA standard. Options doc to review with Judy + Shounak.",
+      "task": null
      },
      {
-      "text": "Front-end errors on the estimator wizard paused progress — clarify whether to scrap or modify the task.",
-      "task": "NIWD-1999"
+      "text": "Centralized ILIA Hub launched on Atlassian - pulls from Jira; houses infrastructure docs, feature sets, daily standups, backlog prioritization and bug triage. Still need to pull individual participant pages into the infrastructure section.",
+      "task": null
      }
     ]
    },
    {
-    "label": "Cleanup & reporting",
+    "label": "Carriers & vendors",
+    "color": "#0891b2",
+    "items": [
+     {
+      "text": "Carrier document-delivery gap - required proposal (client-initialed), certificate of trust, and life-application supplement are not reaching the carrier via ILIA; handled by manual email today. Investigating whether to fold them into the DocuSign envelope templates.",
+      "task": "NIWD-1842"
+     },
+     {
+      "text": "Carrier requirement confirmation - confirm the carrier's exact document needs and whether email transmission is acceptable; the group to compile the required-document list. An upcoming e-signature implementation may resolve the process gap.",
+      "task": null
+     }
+    ]
+   },
+   {
+    "label": "Data & servicing",
     "color": "#00A0A0",
     "items": [
      {
-      "text": "Prioritize manual annual-review cases; re-enable reviews turned off for data issues once confirmed no automated client notices fire.",
-      "task": "NIWD-2019"
+      "text": "Historical document import - Google script in progress to organize legacy client documents into folders for upload into ILIA under the correct policy numbers; cleaning up missing illustrated values in parallel.",
+      "task": "NIWD-1626"
      },
      {
-      "text": "Set new reporting metrics for application documentation; confirm National Life reports contain all needed data.",
-      "task": null
+      "text": "Servicing/enrollment + document-display bugs - rejected servicing action items appearing on the enrollment list (urgent hot fix); an old ID document showing instead of the approved one; document 'date modified' showing today's date. Front/back sync explains some date discrepancies; investigating why older documents persist.",
+      "task": "NIWD-2128"
      },
      {
-      "text": "Troubleshoot the Domo annual-review notice report; build a script to import historical documents into policy folders.",
+      "text": "Resolved this call - Domo annual reports and DocuSign data-label population fixed; Chris to file Jira tickets for the DocuSign fixes so they track in Confluence.",
       "task": null
      }
     ]
    },
    {
-    "label": "System & workflows",
+    "label": "Decisions aligned",
     "color": "#7A5AA6",
     "items": [
      {
-      "text": "Dashboard-sync errors under investigation; document-processing corrections ongoing.",
+      "text": "Confluence is the centralized hub for all team infrastructure, feature documentation, and project-management tracking.",
       "task": null
      },
      {
-      "text": "Paper-application process is ready for development this sprint.",
+      "text": "Jira task creation is required for all DocuSign work, to keep a record tracked in Confluence.",
       "task": null
      },
      {
-      "text": "Address Nick's 3 comments on the payment tasks; verify the death-benefit-only solver enhancements deployed to dev.",
+      "text": "Case-details systematic/monthly-crediting checkbox approved for build.",
       "task": null
      }
     ]
@@ -121,6 +143,58 @@
   ]
  },
  "themes": [
+  {
+   "icon": "",
+   "name": "Centralized ILIA Hub (Confluence / Atlassian)",
+   "badge": "Decision",
+   "badgeclass": "b-blue",
+   "latest": "Confluence/Atlassian designated as the single centralized hub for infrastructure docs, feature sets, and project tracking; pulls directly from Jira and hosts daily standups, backlog prioritization and bug triage. Remaining: pull individual participant pages into the infrastructure section.",
+   "task": null,
+   "meta": [
+    "Jamin / Shounak",
+    "Jul 28",
+    "aligned"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Systematic / Monthly-Crediting Checkbox",
+   "badge": "Decision",
+   "badgeclass": "b-blue",
+   "latest": "Approved: a case-details checkbox lets admins flag clients on systematic or monthly crediting; the toggle informs confirmation-statement processing (~155 users affected). Shounak drafting specs; Mohit to run a targeted scraper.",
+   "task": null,
+   "meta": [
+    "Shounak / Mohit",
+    "Jul 28",
+    "aligned"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "Carrier Document Delivery via DocuSign",
+   "badge": "Investigating",
+   "badgeclass": "b-amber",
+   "latest": "Required proposal (client-initialed), certificate of trust, and life-application supplement are not reaching the carrier via ILIA (manual email workaround). Investigating whether to fold them into the DocuSign envelope; confirming exact carrier needs and whether email is acceptable.",
+   "task": "NIWD-1842",
+   "meta": [
+    "Mohit / Judy",
+    "Jul 28",
+    "investigating"
+   ]
+  },
+  {
+   "icon": "",
+   "name": "ILIA Standard Model (Carrier-Specific vs Unified)",
+   "badge": "Needs input",
+   "badgeclass": "b-amber",
+   "latest": "Jamin is finalizing the ILIA standard model; open decision on whether to keep carrier-specific standardizations or consolidate into a single unified ILIA standard. Options/decisions doc to be reviewed with Judy and Shounak.",
+   "task": null,
+   "meta": [
+    "Jamin / Judy / Shounak",
+    "Jul 28",
+    "defining"
+   ]
+  },
   {
    "icon": "",
    "name": "Agent Client List — Per-Policy View",
@@ -221,7 +295,7 @@
    "task": null,
    "meta": [
     "Olivia / Judy",
-    "Jul 23",
+    "Jul 28",
     "defining"
    ]
   },
@@ -325,7 +399,7 @@
    "task": "NIWD-1889",
    "meta": [
     "Jamin / Judy / Shounak",
-    "Jul 24",
+    "Jul 28",
     "to build"
    ]
   },
@@ -468,7 +542,7 @@
    "task": "NIWD-2053",
    "meta": [
     "Olivia / Judy",
-    "Jul 20",
+    "Jul 28",
     "defining"
    ]
   },
@@ -527,19 +601,19 @@
  ],
  "urgent": [
   {
-   "title": "Estimator wizard front-end errors halted progress — clarify scrap vs modify before dev continues",
-   "who": "dev - Kyle",
-   "task": "NIWD-1999"
+   "title": "Carrier document-delivery gap - required proposal, certificate of trust, and life-app supplement not reaching the carrier via ILIA; manual email workaround in place while envelope integration is scoped",
+   "who": "carriers - Mohit / Judy",
+   "task": "NIWD-1842"
   },
   {
-   "title": "DBR (death-benefit-reduction) data load needs clarification — Jamin + Kyle to move it forward",
-   "who": "data - Jamin / Kyle",
-   "task": "NIWD-1771"
+   "title": "Rejected servicing action items appearing on the enrollment pending list - flagged as an urgent hot fix",
+   "who": "dev - Mohit",
+   "task": "NIWD-2128"
   },
   {
-   "title": "Re-enable annual reviews turned off for data issues — confirm no automated client notices fire first",
-   "who": "ops - Shounak",
-   "task": "NIWD-2019"
+   "title": "GWT build timeline for an agent with four pending cases - assigned to other developers; Mohit to provide a timeline update",
+   "who": "dev - Mohit / Judy",
+   "task": "NIWD-1889"
   }
  ],
  "dev_tagged": [
@@ -606,56 +680,76 @@
   {
    "task": "NIWD-2053",
    "text": "Bank Dropbox/Egnyte - finalize document locations and upload trunch + client files for each new tranche."
+  },
+  {
+   "task": "NIWD-1626",
+   "text": "Historical document import - Google script in progress to organize legacy client documents into folders and upload them into ILIA under the correct policy numbers."
+  },
+  {
+   "task": "NIWD-1842",
+   "text": "Assemble the DocuSign envelope + form set per carrier so required documents (proposal, certificate of trust, application supplement) transmit to the carrier via ILIA."
+  },
+  {
+   "task": "NIWD-2128",
+   "text": "Rejected servicing action items are appearing on the pending enrollment action-items list (urgent hot fix)."
+  },
+  {
+   "task": "NIWD-2129",
+   "text": "Old ID document showing in the client documents folder instead of the newly approved one (client identity masked)."
+  },
+  {
+   "task": "NIWD-2130",
+   "text": "Client-document 'Date Modified' showing today's date rather than the original approval date; front/back sync suspected."
   }
  ],
  "stats": {
-  "calls": 9,
-  "themes": 31,
+  "calls": 10,
+  "themes": 35,
   "urgent": 3,
-  "dev": 16,
+  "dev": 21,
   "blockers": 4,
   "pills": [
    {
-    "t": "Per-Policy Client View",
-    "c": "b-amber"
-   },
-   {
-    "t": "Bank Loan Reconciliation",
-    "c": "b-amber"
-   },
-   {
-    "t": "Ops Handoff / Support Routing",
+    "t": "Systematic Crediting Checkbox",
     "c": "b-blue"
    },
    {
-    "t": "GWT Invitee Lookup",
-    "c": "b-grey"
+    "t": "Centralized ILIA Hub",
+    "c": "b-blue"
    },
    {
-    "t": "Simsaw Capacity",
+    "t": "Carrier Doc Delivery",
     "c": "b-amber"
    },
    {
-    "t": "Annual Reviews & Notices",
+    "t": "ILIA Standard Model",
+    "c": "b-amber"
+   },
+   {
+    "t": "Historical Doc Import",
     "c": "b-teal"
+   },
+   {
+    "t": "Doc Display Bugs",
+    "c": "b-amber"
    }
   ]
  },
  "new_projects": {
-  "updated": "2026-07-27",
+  "updated": "2026-07-28",
   "source": "CIH · mined from Gemini dev-call recaps",
   "last_call": {
-   "date": "2026-07-27",
-   "label": "Mon · Jul 27, 2026",
+   "date": "2026-07-28",
+   "label": "Tue · Jul 28, 2026",
    "count": 2,
    "items": [
-    "Build a script to import historical documents into policy folders",
-    "Troubleshoot / fix the Domo annual-review notice report"
+    "Case-details checkbox to flag clients on systematic/monthly crediting (admin toggle; drives confirmation-statement processing)",
+    "Carrier-required documents (proposal, certificate of trust, application supplement) must transmit to the carrier via ILIA / DocuSign envelope"
    ]
   },
   "avg_per_call": 2.3,
-  "calls_analyzed": 18,
-  "total_raised": 105,
+  "calls_analyzed": 19,
+  "total_raised": 107,
   "pending": [
    "Agent client list: show each policy as its own entry + add a policy-number column",
    "GWT: lookup to flag invitees who already hold a policy (prevent duplicate invites)",
@@ -698,9 +792,16 @@
    "Send living-benefits attributes to the Alliance/estimator API",
    "Custom-illustration UI: save admin-input values (multi-step confirmation)",
    "Build a script to import historical documents into policy folders",
-   "Troubleshoot / fix the Domo annual-review notice report"
+   "Troubleshoot / fix the Domo annual-review notice report",
+   "Case-details checkbox to flag clients on systematic/monthly crediting (admin toggle; drives confirmation-statement processing)",
+   "Carrier-required documents (proposal, certificate of trust, application supplement) must transmit to the carrier via ILIA / DocuSign envelope"
   ],
   "history": [
+   {
+    "date": "2026-07-28",
+    "label": "Tue · Jul 28",
+    "count": 2
+   },
    {
     "date": "2026-07-27",
     "label": "Mon · Jul 27",
