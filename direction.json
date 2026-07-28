@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-24",
+ "updated": "2026-07-27",
  "sample": false,
  "intro": "Dev-call intelligence - the running capture of what our daily calls cover (in-product, carriers/vendors, data & servicing), the goals we're driving, the blockers in the way, and items that still need a task. Auto-summarized from the Gemini call recap.",
  "note": "Populated by CIH from the Gemini dev-call recap email after each call. (The site is static - the on-page button loads the last CIH-published notes; CIH regenerates this from the newest Gemini email.)",
@@ -59,75 +59,61 @@
   }
  ],
  "latest_call": {
-  "title": "Dev Meeting",
-  "date": "Fri - Jul 24, 2026",
+  "title": "Daily Sync / Dev Office Hours",
+  "date": "Mon - Jul 27, 2026",
   "source": "via Gemini (Google Meet)",
-  "lede": "Data-cleanup + workload-boundaries call. Headlines: an agent/admin client-list defect — clients with multiple policies show only one — will be fixed by giving each policy its own row plus a dedicated policy-number column; the Great Wealth Transfer needs a lookup so an invited family member who already holds a policy doesn't trigger duplicate invites and data cleanup; historical bank-loan (WinTrust) data shows per-account interest-rate discrepancies (roughly $30k on some accounts) that will be reconciled by auditing the source loan documents year-by-year and building a reconciliation formula; and the team set clear operational boundaries — non-technical support and sales feature-requests route to Operations/Todd and the UFC team, not tech staff, with servicing/inbox work offloaded and a system-integration list compiled for the AI build-out. Simsaw's single-point-of-contact capacity was flagged as a bottleneck; leadership will weigh a second contact. Annual reviews will be re-enabled once confirmed they won't fire automated client notices (SARS already re-enabled).",
+  "lede": "Daily sync + dev office hours. Status standardization is refining the ticketing model (NIWD-2070) while DBR / death-benefit-reduction data processing still needs clarification (NIWD-1771); front-end errors on the estimator wizard have paused progress pending dev review (NIWD-1999). The team prioritized manual annual-review cases, set new reporting metrics for application documentation, and is verifying data integrity for future quotes and the client-management views. Dashboard-sync errors and document-processing corrections are under investigation; the paper-application process is ready for development this sprint. Annual reviews are being re-enabled for policies turned off for manual data issues, once confirmed they won't fire automated client notices.",
   "channels": [
    {
-    "label": "Inside ILIA",
+    "label": "Status & data",
     "color": "#0076BD",
     "items": [
      {
-      "text": "Agent client list — per-policy view: clients holding multiple policies currently show only one entry; standardize the agent/admin client list so every policy gets its own row plus a dedicated policy-number column.",
-      "task": null
+      "text": "Status standardization across ILIA — refine the guiding-star ticket so statuses stay consistent across screens.",
+      "task": "NIWD-2070"
      },
      {
-      "text": "GWT invitee lookup: add a check so the Great Wealth Transfer flags when an invited family member already holds a policy, preventing duplicate invite emails and cleanup — folded into the active GWT update work.",
-      "task": "NIWD-1889"
+      "text": "DBR (death-benefit-reduction) data load still needs clarification; Jamin + Kyle to make movement.",
+      "task": "NIWD-1771"
      },
      {
-      "text": "Backlog cleanup: hold a team session next week to realign responsibilities and clean up the ILIA task board with operations.",
-      "task": null
+      "text": "Front-end errors on the estimator wizard paused progress — clarify whether to scrap or modify the task.",
+      "task": "NIWD-1999"
      }
     ]
    },
    {
-    "label": "Carriers & vendors",
-    "color": "#0891b2",
+    "label": "Cleanup & reporting",
+    "color": "#00A0A0",
     "items": [
      {
-      "text": "Simsaw capacity: dev vendor flagged as a bottleneck — one contact handles all communication plus heavy ad-hoc work; evaluate a second point of contact or added resources.",
-      "task": null
-     }
-    ]
-   },
-   {
-    "label": "Data & servicing",
-    "color": "#c47f0a",
-    "items": [
-     {
-      "text": "Bank-loan interest-rate reconciliation (WinTrust): historical loan data shows per-account discrepancies (~$30k on some) from incorrect/blended interest rates; audit source loan documents year-by-year and build a reconciliation formula (theoretical until proofed).",
-      "task": null
-     },
-     {
-      "text": "Annual reviews & notices: confirm whether re-enabling annual reviews triggers automated client notices before turning them back on; SARS re-enabled and considered fixed.",
+      "text": "Prioritize manual annual-review cases; re-enable reviews turned off for data issues once confirmed no automated client notices fire.",
       "task": "NIWD-2019"
      },
      {
-      "text": "Illustrated values: investigate reported illustrated-value data problems surfacing in Domo.",
+      "text": "Set new reporting metrics for application documentation; confirm National Life reports contain all needed data.",
       "task": null
      },
      {
-      "text": "Workload handoff: move servicing, inbox, and non-urgent sales feedback from the tech team to operations/UFC; compile the list of required system integrations for the AI build-out to automate data extraction.",
+      "text": "Troubleshoot the Domo annual-review notice report; build a script to import historical documents into policy folders.",
       "task": null
      }
     ]
    },
    {
-    "label": "Decisions aligned",
-    "color": "#1d6b34",
+    "label": "System & workflows",
+    "color": "#7A5AA6",
     "items": [
      {
-      "text": "Agent client list standardized: each policy is its own entry with a dedicated policy-number column.",
+      "text": "Dashboard-sync errors under investigation; document-processing corrections ongoing.",
       "task": null
      },
      {
-      "text": "Non-technical support requests route to Operations/Todd, not the technical team.",
+      "text": "Paper-application process is ready for development this sprint.",
       "task": null
      },
      {
-      "text": "Call-routing protocol: administrative staff use informational guidelines to direct inquiries to Operations/Todd instead of technical staff.",
+      "text": "Address Nick's 3 comments on the payment tasks; verify the death-benefit-only solver enhancements deployed to dev.",
       "task": null
      }
     ]
@@ -541,19 +527,19 @@
  ],
  "urgent": [
   {
-   "title": "Bank-loan reconciliation — per-account interest-rate discrepancies (~$30k on some); audit source loan documents and build a reconciliation formula",
-   "who": "data - Judy",
-   "task": null
+   "title": "Estimator wizard front-end errors halted progress — clarify scrap vs modify before dev continues",
+   "who": "dev - Kyle",
+   "task": "NIWD-1999"
   },
   {
-   "title": "Agent client multi-policy display defect — clients with multiple policies show only one; standardize per-policy view + add a policy-number column",
-   "who": "dev",
-   "task": null
+   "title": "DBR (death-benefit-reduction) data load needs clarification — Jamin + Kyle to move it forward",
+   "who": "data - Jamin / Kyle",
+   "task": "NIWD-1771"
   },
   {
-   "title": "Systematic-allocation client outreach — Sept 26 form deadline; coordinate outreach (Todd/Marissa/Shounak) + prep the Alliance call",
-   "who": "product - Judy / Shounak",
-   "task": null
+   "title": "Re-enable annual reviews turned off for data issues — confirm no automated client notices fire first",
+   "who": "ops - Shounak",
+   "task": "NIWD-2019"
   }
  ],
  "dev_tagged": [
@@ -656,22 +642,20 @@
   ]
  },
  "new_projects": {
-  "updated": "2026-07-24",
+  "updated": "2026-07-27",
   "source": "CIH · mined from Gemini dev-call recaps",
   "last_call": {
-   "date": "2026-07-24",
-   "label": "Fri · Jul 24, 2026",
-   "count": 4,
+   "date": "2026-07-27",
+   "label": "Mon · Jul 27, 2026",
+   "count": 2,
    "items": [
-    "Agent client list: show each policy as its own entry + add a policy-number column",
-    "GWT: lookup to flag invitees who already hold a policy (prevent duplicate invites)",
-    "Bank-loan interest-rate reconciliation formula (audit source loan documents by year)",
-    "Compile system-integration list for AI build-out to automate servicing data extraction"
+    "Build a script to import historical documents into policy folders",
+    "Troubleshoot / fix the Domo annual-review notice report"
    ]
   },
-  "avg_per_call": 2.2,
-  "calls_analyzed": 17,
-  "total_raised": 103,
+  "avg_per_call": 2.3,
+  "calls_analyzed": 18,
+  "total_raised": 105,
   "pending": [
    "Agent client list: show each policy as its own entry + add a policy-number column",
    "GWT: lookup to flag invitees who already hold a policy (prevent duplicate invites)",
@@ -712,9 +696,16 @@
    "IL applications: re-enable financial questions; update IL mappings (doc name, financial forms, HIV form)",
    "Onboard CMS to the internal side",
    "Send living-benefits attributes to the Alliance/estimator API",
-   "Custom-illustration UI: save admin-input values (multi-step confirmation)"
+   "Custom-illustration UI: save admin-input values (multi-step confirmation)",
+   "Build a script to import historical documents into policy folders",
+   "Troubleshoot / fix the Domo annual-review notice report"
   ],
   "history": [
+   {
+    "date": "2026-07-27",
+    "label": "Mon · Jul 27",
+    "count": 2
+   },
    {
     "date": "2026-07-24",
     "label": "Fri · Jul 24",
